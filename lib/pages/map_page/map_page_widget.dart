@@ -1,4 +1,5 @@
 import '../../backend/api_requests/api_calls.dart';
+import '../../backend/schema/structs/student_model_struct.dart';
 import '/dialogs/go_or_back/go_or_back_widget.dart';
 import '/flutter_flow/flutter_flow_google_map.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -187,24 +188,25 @@ class _MapPageWidgetState extends State<MapPageWidget> {
       setState(() {
         _model.isLoading = false;
       });
-      // setState(() {
-      //   FFAppState().UserModelState =
-      //   UserModelStruct.maybeFromMap(
-      //       getJsonField(
-      //         (_model.apiResultqus?.jsonBody ??
-      //             ''),
-      //         r'''$.user''',
-      //       ))!;
-      // });
-      // setState(() {
-      //   FFAppState().TokenModelState =
-      //   TokenModelStruct.maybeFromMap(
-      //       getJsonField(
-      //         (_model.apiResultqus?.jsonBody ??
-      //             ''),
-      //         r'''$''',
-      //       ))!;
-      // });
+      setState(() {
+        FFAppState().studentAppStateList =
+            (getJsonField(
+              (_model.apiResultqus?.jsonBody ??
+                  ''),
+              r'''$.student''',
+              true,
+            )!
+                .toList()
+                .map<StudentModelStruct?>(
+                StudentModelStruct
+                    .maybeFromMap)
+                .toList()
+            as Iterable<
+                StudentModelStruct?>)
+                .withoutNulls
+                .toList()
+                .cast<StudentModelStruct>();
+      });
     } else {
       setState(() {
         _model.isLoading = false;
