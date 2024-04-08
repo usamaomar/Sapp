@@ -464,6 +464,26 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                               );
                                             },
                                           );
+                                          setState(() {
+                                            FFAppState().fullStudentStateList =
+                                                (getJsonField(
+                                              (_model.apiResultqus?.jsonBody ??
+                                                  ''),
+                                              r'''$''',
+                                              true,
+                                            )!
+                                                            .toList()
+                                                            .map<FullStudentModelStruct?>(
+                                                                FullStudentModelStruct
+                                                                    .maybeFromMap)
+                                                            .toList()
+                                                        as Iterable<
+                                                            FullStudentModelStruct?>)
+                                                    .withoutNulls
+                                                    .toList()
+                                                    .cast<
+                                                        FullStudentModelStruct>();
+                                          });
                                           if (shouldSetState) setState(() {});
                                           return;
                                         }
