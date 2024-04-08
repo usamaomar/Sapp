@@ -41,11 +41,12 @@ class FFAppState extends ChangeNotifier {
       }
     });
     _safeInit(() {
-      _studentAppStateList = prefs
-              .getStringList('ff_studentAppStateList')
+      _fullStudentStateList = prefs
+              .getStringList('ff_fullStudentStateList')
               ?.map((x) {
                 try {
-                  return StudentModelStruct.fromSerializableMap(jsonDecode(x));
+                  return FullStudentModelStruct.fromSerializableMap(
+                      jsonDecode(x));
                 } catch (e) {
                   print("Can't decode persisted data type. Error: $e.");
                   return null;
@@ -53,7 +54,7 @@ class FFAppState extends ChangeNotifier {
               })
               .withoutNulls
               .toList() ??
-          _studentAppStateList;
+          _fullStudentStateList;
     });
   }
 
@@ -88,46 +89,47 @@ class FFAppState extends ChangeNotifier {
     prefs.setString('ff_TokenModelState', _TokenModelState.serialize());
   }
 
-  List<StudentModelStruct> _studentAppStateList = [];
-  List<StudentModelStruct> get studentAppStateList => _studentAppStateList;
-  set studentAppStateList(List<StudentModelStruct> value) {
-    _studentAppStateList = value;
+  List<FullStudentModelStruct> _fullStudentStateList = [];
+  List<FullStudentModelStruct> get fullStudentStateList =>
+      _fullStudentStateList;
+  set fullStudentStateList(List<FullStudentModelStruct> value) {
+    _fullStudentStateList = value;
     prefs.setStringList(
-        'ff_studentAppStateList', value.map((x) => x.serialize()).toList());
+        'ff_fullStudentStateList', value.map((x) => x.serialize()).toList());
   }
 
-  void addToStudentAppStateList(StudentModelStruct value) {
-    _studentAppStateList.add(value);
-    prefs.setStringList('ff_studentAppStateList',
-        _studentAppStateList.map((x) => x.serialize()).toList());
+  void addToFullStudentStateList(FullStudentModelStruct value) {
+    _fullStudentStateList.add(value);
+    prefs.setStringList('ff_fullStudentStateList',
+        _fullStudentStateList.map((x) => x.serialize()).toList());
   }
 
-  void removeFromStudentAppStateList(StudentModelStruct value) {
-    _studentAppStateList.remove(value);
-    prefs.setStringList('ff_studentAppStateList',
-        _studentAppStateList.map((x) => x.serialize()).toList());
+  void removeFromFullStudentStateList(FullStudentModelStruct value) {
+    _fullStudentStateList.remove(value);
+    prefs.setStringList('ff_fullStudentStateList',
+        _fullStudentStateList.map((x) => x.serialize()).toList());
   }
 
-  void removeAtIndexFromStudentAppStateList(int index) {
-    _studentAppStateList.removeAt(index);
-    prefs.setStringList('ff_studentAppStateList',
-        _studentAppStateList.map((x) => x.serialize()).toList());
+  void removeAtIndexFromFullStudentStateList(int index) {
+    _fullStudentStateList.removeAt(index);
+    prefs.setStringList('ff_fullStudentStateList',
+        _fullStudentStateList.map((x) => x.serialize()).toList());
   }
 
-  void updateStudentAppStateListAtIndex(
+  void updateFullStudentStateListAtIndex(
     int index,
-    StudentModelStruct Function(StudentModelStruct) updateFn,
+    FullStudentModelStruct Function(FullStudentModelStruct) updateFn,
   ) {
-    _studentAppStateList[index] = updateFn(_studentAppStateList[index]);
-    prefs.setStringList('ff_studentAppStateList',
-        _studentAppStateList.map((x) => x.serialize()).toList());
+    _fullStudentStateList[index] = updateFn(_fullStudentStateList[index]);
+    prefs.setStringList('ff_fullStudentStateList',
+        _fullStudentStateList.map((x) => x.serialize()).toList());
   }
 
-  void insertAtIndexInStudentAppStateList(
-      int index, StudentModelStruct value) {
-    _studentAppStateList.insert(index, value);
-    prefs.setStringList('ff_studentAppStateList',
-        _studentAppStateList.map((x) => x.serialize()).toList());
+  void insertAtIndexInFullStudentStateList(
+      int index, FullStudentModelStruct value) {
+    _fullStudentStateList.insert(index, value);
+    prefs.setStringList('ff_fullStudentStateList',
+        _fullStudentStateList.map((x) => x.serialize()).toList());
   }
 }
 

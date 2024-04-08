@@ -465,23 +465,24 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                             },
                                           );
                                           setState(() {
-                                            FFAppState().studentAppStateList =
+                                            FFAppState().fullStudentStateList =
                                                 (getJsonField(
                                               (_model.apiResultqus?.jsonBody ??
                                                   ''),
-                                              r'''$.student''',
+                                              r'''$''',
                                               true,
                                             )!
                                                             .toList()
-                                                            .map<StudentModelStruct?>(
-                                                                StudentModelStruct
+                                                            .map<FullStudentModelStruct?>(
+                                                                FullStudentModelStruct
                                                                     .maybeFromMap)
                                                             .toList()
                                                         as Iterable<
-                                                            StudentModelStruct?>)
+                                                            FullStudentModelStruct?>)
                                                     .withoutNulls
                                                     .toList()
-                                                    .cast<StudentModelStruct>();
+                                                    .cast<
+                                                        FullStudentModelStruct>();
                                           });
                                           if (shouldSetState) setState(() {});
                                           return;
