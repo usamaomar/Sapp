@@ -1,3 +1,4 @@
+import '../../backend/api_requests/api_calls.dart';
 import '/dialogs/go_or_back/go_or_back_widget.dart';
 import '/flutter_flow/flutter_flow_google_map.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -97,8 +98,8 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                   intercepting: isWeb,
                   child: Builder(
                     builder: (context) => Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 20.0),
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                          0.0, 0.0, 0.0, 20.0),
                       child: FFButtonWidget(
                         onPressed: () async {
                           await showDialog(
@@ -118,11 +119,9 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                           : FocusScope.of(context).unfocus(),
                                   child: GoOrBackWidget(
                                     actionGo: () async {
-                                      context.safePop();
+                                      actionGO();
                                     },
-                                    actionBack: () async {
-                                      context.safePop();
-                                    },
+                                    actionBack: () async {},
                                   ),
                                 ),
                               );
@@ -157,10 +156,83 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                   ),
                 ),
               ),
+              Visibility(
+                visible: _model.isLoading,
+                child: Container(
+                  color: Colors.black26,
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator(
+                      color: Colors.amberAccent,
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),
       ),
     );
+  }
+
+  void actionGO() async {
+    setState(() {
+      _model.isLoading = true;
+    });
+    _model.apiResultqus = await StrackerApisGroup.getStudentApiCall
+        .call(authorization: FFAppState().TokenModelState.token);
+    if ((_model.apiResultqus?.succeeded ?? true)) {
+      setState(() {
+        _model.isLoading = false;
+      });
+      // setState(() {
+      //   FFAppState().UserModelState =
+      //   UserModelStruct.maybeFromMap(
+      //       getJsonField(
+      //         (_model.apiResultqus?.jsonBody ??
+      //             ''),
+      //         r'''$.user''',
+      //       ))!;
+      // });
+      // setState(() {
+      //   FFAppState().TokenModelState =
+      //   TokenModelStruct.maybeFromMap(
+      //       getJsonField(
+      //         (_model.apiResultqus?.jsonBody ??
+      //             ''),
+      //         r'''$''',
+      //       ))!;
+      // });
+    } else {
+      setState(() {
+        _model.isLoading = false;
+      });
+      await showDialog(
+        context: context,
+        builder: (alertDialogContext) {
+          return AlertDialog(
+            title: Text(FFLocalizations.of(context).getVariableText(
+              enText: 'Error',
+              arText: 'خطا',
+            )),
+            content: Text(getJsonField(
+              (_model.apiResultqus?.jsonBody ?? ''),
+              r'''$.message''',
+            ).toString()),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(alertDialogContext),
+                child: Text(FFLocalizations.of(context).getVariableText(
+                  enText: 'Ok',
+                  arText: 'حسنا',
+                )),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }

@@ -1,3 +1,4 @@
+import '../../backend/api_requests/api_manager.dart';
 import '/flutter_flow/flutter_flow_google_map.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'map_page_widget.dart' show MapPageWidget;
@@ -18,7 +19,8 @@ class MapPageModel extends FlutterFlowModel<MapPageWidget> {
   void updateStudentsLocationsListAtIndex(
           int index, Function(LatLng) updateFn) =>
       studentsLocationsList[index] = updateFn(studentsLocationsList[index]);
-
+  ApiCallResponse? apiResultqus;
+  bool isLoading = false;
   ///  State fields for stateful widgets in this page.
 
   final unfocusNode = FocusNode();

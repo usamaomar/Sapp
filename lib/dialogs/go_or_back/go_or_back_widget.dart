@@ -68,6 +68,7 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
                     hoverColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () async {
+                      context.safePop();
                       Navigator.pop(context);
                     },
                     child: Icon(
@@ -84,10 +85,11 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsetsDirectional.fromSTEB(120.0, 20.0, 120.0, 20.0),
+                  const EdgeInsetsDirectional.fromSTEB(70.0, 20.0, 70.0, 20.0),
                   child: FFButtonWidget(
-                    onPressed: () {
-                      print('Button pressed ...');
+                    onPressed: (){
+                      context.safePop();
+                      widget.actionGo?.call();
                     },
                     text: FFLocalizations.of(context).getText(
                       'oe5kkwcl' /* Go */,
@@ -120,10 +122,10 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
                 ),
                 Padding(
                   padding:
-                      const EdgeInsetsDirectional.fromSTEB(120.0, 20.0, 120.0, 20.0),
+                      const EdgeInsetsDirectional.fromSTEB(70.0, 20.0, 70.0, 20.0),
                   child: FFButtonWidget(
-                    onPressed: () {
-                      print('Button pressed ...');
+                    onPressed: (){
+                      widget.actionBack?.call();
                     },
                     text: FFLocalizations.of(context).getText(
                       'ainho1h0' /* Away */,
