@@ -40,6 +40,21 @@ class FFAppState extends ChangeNotifier {
         }
       }
     });
+    _safeInit(() {
+      _studentAppStateList = prefs
+              .getStringList('ff_studentAppStateList')
+              ?.map((x) {
+                try {
+                  return StudentModelStruct.fromSerializableMap(jsonDecode(x));
+                } catch (e) {
+                  print("Can't decode persisted data type. Error: $e.");
+                  return null;
+                }
+              })
+              .withoutNulls
+              .toList() ??
+          _studentAppStateList;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -71,6 +86,48 @@ class FFAppState extends ChangeNotifier {
   void updateTokenModelStateStruct(Function(TokenModelStruct) updateFn) {
     updateFn(_TokenModelState);
     prefs.setString('ff_TokenModelState', _TokenModelState.serialize());
+  }
+
+  List<StudentModelStruct> _studentAppStateList = [];
+  List<StudentModelStruct> get studentAppStateList => _studentAppStateList;
+  set studentAppStateList(List<StudentModelStruct> value) {
+    _studentAppStateList = value;
+    prefs.setStringList(
+        'ff_studentAppStateList', value.map((x) => x.serialize()).toList());
+  }
+
+  void addToStudentAppStateList(StudentModelStruct value) {
+    _studentAppStateList.add(value);
+    prefs.setStringList('ff_studentAppStateList',
+        _studentAppStateList.map((x) => x.serialize()).toList());
+  }
+
+  void removeFromStudentAppStateList(StudentModelStruct value) {
+    _studentAppStateList.remove(value);
+    prefs.setStringList('ff_studentAppStateList',
+        _studentAppStateList.map((x) => x.serialize()).toList());
+  }
+
+  void removeAtIndexFromStudentAppStateList(int index) {
+    _studentAppStateList.removeAt(index);
+    prefs.setStringList('ff_studentAppStateList',
+        _studentAppStateList.map((x) => x.serialize()).toList());
+  }
+
+  void updateStudentAppStateListAtIndex(
+    int index,
+    StudentModelStruct Function(StudentModelStruct) updateFn,
+  ) {
+    _studentAppStateList[index] = updateFn(_studentAppStateList[index]);
+    prefs.setStringList('ff_studentAppStateList',
+        _studentAppStateList.map((x) => x.serialize()).toList());
+  }
+
+  void insertAtIndexInStudentAppStateList(
+      int index, StudentModelStruct value) {
+    _studentAppStateList.insert(index, value);
+    prefs.setStringList('ff_studentAppStateList',
+        _studentAppStateList.map((x) => x.serialize()).toList());
   }
 }
 
