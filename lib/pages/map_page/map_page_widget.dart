@@ -1,5 +1,12 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+
 import '../../backend/api_requests/api_calls.dart';
-import '../../backend/schema/structs/student_model_struct.dart';
+import '../../backend/schema/structs/full_student_model_struct.dart';
 import '/dialogs/go_or_back/go_or_back_widget.dart';
 import '/flutter_flow/flutter_flow_google_map.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -9,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'map_page_model.dart';
 export 'map_page_model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as lats;
+import 'dart:ui' as ui;
 
 class MapPageWidget extends StatefulWidget {
   const MapPageWidget({super.key});
@@ -19,13 +28,77 @@ class MapPageWidget extends StatefulWidget {
 
 class _MapPageWidgetState extends State<MapPageWidget> {
   late MapPageModel _model;
-
+  LatLng? currentLocation;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  late LocationSettings locationSettings;
+  late StreamSubscription<Position> positionStream;
+  late GoogleMapController mapController;
+  late Set<Marker> markers;
 
   @override
   void initState() {
+    markers = <Marker>{};
     super.initState();
     _model = createModel(context, () => MapPageModel());
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      setState(() {
+        FFAppState().fullStudentStateList.map((data) {
+          addPointAsMarker(data.student.id.toString(), double.parse(data.parent.lat), double.parse(data.parent.lng),
+              "assets/images/artboar.png", "${data.student.studentName}}",100);
+        }).toList();
+      });
+      await _determinePosition().then((value) {
+        setState(() {
+          mapController.animateCamera(CameraUpdate.newLatLngZoom(
+              lats.LatLng(value.latitude, value.longitude), 18));
+        });
+      });
+      if (FFAppState().fullStudentStateList.isNotEmpty) {
+        getLocationApi();
+      }
+    });
+  }
+
+  void getLocationApi() {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      locationSettings = AndroidSettings(
+          accuracy: LocationAccuracy.best,
+          distanceFilter: 1,
+          forceLocationManager: true,
+          intervalDuration: const Duration(seconds: 0),
+          foregroundNotificationConfig: const ForegroundNotificationConfig(
+            notificationText: "Bus Location Is collected",
+            notificationTitle: "Trackllo",
+            enableWakeLock: true,
+          ));
+    } else if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      locationSettings = AppleSettings(
+        accuracy: LocationAccuracy.best,
+        activityType: ActivityType.fitness,
+        distanceFilter: 1,
+        pauseLocationUpdatesAutomatically: true,
+        showBackgroundLocationIndicator: false,
+      );
+    } else {
+      locationSettings = const LocationSettings(
+        accuracy: LocationAccuracy.best,
+        distanceFilter: 1,
+      );
+    }
+    positionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position? position) {
+      setState(() {
+        markers.clear();
+        FFAppState().fullStudentStateList.map((data) {
+          addPointAsMarker(data.student.id.toString(), double.parse(data.parent.lat), double.parse(data.parent.lng),
+              "assets/images/artboar.png", "${data.student.studentName}",100);
+        }).toList();
+        addPointAsMarker('assets/images/bus_5.png', position?.latitude ?? 0.0, position?.longitude ?? 0.0,
+            "assets/images/bus_5.png", "-",100);
+      });
+    });
   }
 
   @override
@@ -67,31 +140,18 @@ class _MapPageWidgetState extends State<MapPageWidget> {
           top: true,
           child: Stack(
             children: [
-              FlutterFlowGoogleMap(
-                controller: _model.googleMapsController,
-                onCameraIdle: (latLng) => _model.googleMapsCenter = latLng,
-                initialLocation: _model.googleMapsCenter ??=
-                    const LatLng(13.106061, -59.613158),
-                markers: _model.studentsLocationsList
-                    .map(
-                      (marker) => FlutterFlowMarker(
-                        marker.serialize(),
-                        marker,
-                      ),
-                    )
-                    .toList(),
-                markerColor: GoogleMarkerColor.violet,
-                mapType: MapType.normal,
-                style: GoogleMapStyle.standard,
-                initialZoom: 14.0,
-                allowInteraction: true,
-                allowZoom: true,
-                showZoomControls: false,
-                showLocation: true,
-                showCompass: false,
-                showMapToolbar: false,
-                showTraffic: false,
-                centerMapOnMarkerTap: true,
+              GoogleMap(
+                zoomControlsEnabled: false,
+                myLocationEnabled: true,
+                myLocationButtonEnabled: false,
+                onMapCreated: (GoogleMapController controller) {
+                  mapController = controller;
+                },
+                markers: markers,
+                initialCameraPosition: const CameraPosition(
+                  target: lats.LatLng(31.987482, 35.884539),
+                  zoom: 10.4746,
+                ),
               ),
               Align(
                 alignment: const AlignmentDirectional(0.0, 1.0),
@@ -103,35 +163,79 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                           0.0, 0.0, 0.0, 20.0),
                       child: FFButtonWidget(
                         onPressed: () async {
-                          await showDialog(
-                            context: context,
-                            builder: (dialogContext) {
-                              return Dialog(
-                                elevation: 0,
-                                insetPadding: EdgeInsets.zero,
-                                backgroundColor: Colors.transparent,
-                                alignment: const AlignmentDirectional(0.0, 0.0)
-                                    .resolve(Directionality.of(context)),
-                                child: GestureDetector(
-                                  onTap: () =>
-                                      _model.unfocusNode.canRequestFocus
-                                          ? FocusScope.of(context)
-                                              .requestFocus(_model.unfocusNode)
-                                          : FocusScope.of(context).unfocus(),
-                                  child: GoOrBackWidget(
-                                    actionGo: () async {
-                                      actionGO();
+                          checkPermition().catchError((onError) async {
+                            if (onError.toString().isEmpty) {
+                              _determinePosition().then((value) async {
+                                setState(() {
+                                  _model.googleMapsCenter =
+                                      LatLng(value.latitude, value.longitude);
+                                });
+                                if (FFAppState()
+                                    .fullStudentStateList
+                                    .isNotEmpty) {
+                                  setState(() {
+                                    FFAppState().fullStudentStateList.clear();
+                                  });
+                                } else {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (dialogContext) {
+                                      return Dialog(
+                                        elevation: 0,
+                                        insetPadding: EdgeInsets.zero,
+                                        backgroundColor: Colors.transparent,
+                                        alignment:
+                                            const AlignmentDirectional(0.0, 0.0)
+                                                .resolve(
+                                                    Directionality.of(context)),
+                                        child: GestureDetector(
+                                          onTap: () => _model
+                                                  .unfocusNode.canRequestFocus
+                                              ? FocusScope.of(context)
+                                                  .requestFocus(
+                                                      _model.unfocusNode)
+                                              : FocusScope.of(context)
+                                                  .unfocus(),
+                                          child: GoOrBackWidget(
+                                            actionGo: () async {
+                                              actionGO();
+                                            },
+                                            actionBack: () async {},
+                                          ),
+                                        ),
+                                      );
                                     },
-                                    actionBack: () async {},
+                                  ).then((value) => setState(() {}));
+                                }
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    FFLocalizations.of(context).getVariableText(
+                                      enText: onError,
+                                      arText: onError,
+                                    ),
+                                    style: TextStyle(
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryText,
+                                    ),
                                   ),
+                                  duration: const Duration(milliseconds: 4000),
+                                  backgroundColor:
+                                      FlutterFlowTheme.of(context).secondary,
                                 ),
                               );
-                            },
-                          ).then((value) => setState(() {}));
+                            }
+                          });
                         },
-                        text: FFLocalizations.of(context).getText(
-                          'ct87vsqr' /* Start */,
-                        ),
+                        text: FFAppState().fullStudentStateList.isNotEmpty
+                            ? FFLocalizations.of(context).getText(
+                                'ct87vsqrs' /* Stop */,
+                              )
+                            : FFLocalizations.of(context).getText(
+                                'ct87vsqr' /* Start */,
+                              ),
                         options: FFButtonOptions(
                           height: 40.0,
                           padding: const EdgeInsetsDirectional.fromSTEB(
@@ -163,7 +267,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                   color: Colors.black26,
                   width: double.infinity,
                   height: double.infinity,
-                  child: Align(
+                  child: const Align(
                     alignment: Alignment.center,
                     child: CircularProgressIndicator(
                       color: Colors.amberAccent,
@@ -178,6 +282,39 @@ class _MapPageWidgetState extends State<MapPageWidget> {
     );
   }
 
+  void addPointAsMarker(
+      String id, double lat, double lng, String marker,String valueOfUpdatedObject,int value ) async {
+    await getBitmapDescriptorFromAssetBytes(marker, value).then((icon) {
+      setState(() {
+        markers.add(Marker(
+          markerId: MarkerId(id),
+          position: lats.LatLng(lat, lng),
+          draggable: false,
+          icon: icon,
+          infoWindow: InfoWindow(
+            title: valueOfUpdatedObject,
+          ),
+        ));
+      });
+    });
+  }
+
+  Future<Uint8List?> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
+        ?.buffer
+        .asUint8List();
+  }
+
+  Future<BitmapDescriptor> getBitmapDescriptorFromAssetBytes(
+      String path, int width) async {
+    final Uint8List? imageData = await getBytesFromAsset(path, width);
+    return BitmapDescriptor.fromBytes(imageData!);
+  }
+
   void actionGO() async {
     setState(() {
       _model.isLoading = true;
@@ -189,24 +326,20 @@ class _MapPageWidgetState extends State<MapPageWidget> {
         _model.isLoading = false;
       });
       setState(() {
-        FFAppState().studentAppStateList =
-            (getJsonField(
-              (_model.apiResultqus?.jsonBody ??
-                  ''),
-              r'''$.student''',
-              true,
-            )!
+        FFAppState().fullStudentStateList = (getJsonField(
+          (_model.apiResultqus?.jsonBody ?? ''),
+          r'''$''',
+          true,
+        )!
                 .toList()
-                .map<StudentModelStruct?>(
-                StudentModelStruct
-                    .maybeFromMap)
-                .toList()
-            as Iterable<
-                StudentModelStruct?>)
-                .withoutNulls
-                .toList()
-                .cast<StudentModelStruct>();
+                .map<FullStudentModelStruct?>(
+                    FullStudentModelStruct.maybeFromMap)
+                .toList() as Iterable<FullStudentModelStruct?>)
+            .withoutNulls
+            .toList()
+            .cast<FullStudentModelStruct>();
       });
+      getLocationApi();
     } else {
       setState(() {
         _model.isLoading = false;
@@ -236,5 +369,76 @@ class _MapPageWidgetState extends State<MapPageWidget> {
         },
       );
     }
+  }
+
+  Future checkPermition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('تم تعطيل تحديد خدمات الموقع.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('تم رفض تحديد الموقع');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error('تم رفض تحديد الموقع بشكل دائم، ولا يمكننا طلب اذن.');
+    }
+
+    return Future.error('');
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition();
   }
 }

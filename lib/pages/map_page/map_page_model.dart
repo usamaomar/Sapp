@@ -7,18 +7,18 @@ import 'package:flutter/material.dart';
 class MapPageModel extends FlutterFlowModel<MapPageWidget> {
   ///  Local state fields for this page.
 
-  List<LatLng> studentsLocationsList = [];
-  void addToStudentsLocationsList(LatLng item) =>
-      studentsLocationsList.add(item);
-  void removeFromStudentsLocationsList(LatLng item) =>
-      studentsLocationsList.remove(item);
-  void removeAtIndexFromStudentsLocationsList(int index) =>
-      studentsLocationsList.removeAt(index);
-  void insertAtIndexInStudentsLocationsList(int index, LatLng item) =>
-      studentsLocationsList.insert(index, item);
-  void updateStudentsLocationsListAtIndex(
-          int index, Function(LatLng) updateFn) =>
-      studentsLocationsList[index] = updateFn(studentsLocationsList[index]);
+  // List<LatLng> studentsLocationsList = [];
+  // void addToStudentsLocationsList(LatLng item) =>
+  //     studentsLocationsList.add(item);
+  // void removeFromStudentsLocationsList(LatLng item) =>
+  //     studentsLocationsList.remove(item);
+  // void removeAtIndexFromStudentsLocationsList(int index) =>
+  //     studentsLocationsList.removeAt(index);
+  // void insertAtIndexInStudentsLocationsList(int index, LatLng item) =>
+  //     studentsLocationsList.insert(index, item);
+  // void updateStudentsLocationsListAtIndex(
+  //         int index, Function(LatLng) updateFn) =>
+  //     studentsLocationsList[index] = updateFn(studentsLocationsList[index]);
   ApiCallResponse? apiResultqus;
   bool isLoading = false;
   ///  State fields for stateful widgets in this page.

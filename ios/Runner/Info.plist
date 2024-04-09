@@ -16,6 +16,12 @@
 	<string>STracker</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>We need to know your location To Provide Your Location On Map For You Only, your location will not be shared with any one.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We need to know your location To Provide Your Location On Map For You Only, your location will not be shared with any one.</string>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>We need to know your location To Provide Your Location On Map For You Only, your location will not be shared with any one.</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>

@@ -132,7 +132,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
     },
     '6tg8u2nt': {
       'en': 'Password',
-      'ar': '',
+      'ar': 'كلمة السر',
     },
     'za044c2e': {
       'en': 'Password Is Empty',
@@ -140,11 +140,11 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
     },
     '2hh5c3n9': {
       'en': 'Sign In',
-      'ar': '',
+      'ar': 'تسجيل الدخول',
     },
     '98a35tzc': {
       'en': 'Home',
-      'ar': '',
+      'ar': 'الرئيسية',
     },
   },
   // MapPage
@@ -156,6 +156,10 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
     'ct87vsqr': {
       'en': 'Start',
       'ar': 'يبدأ',
+    },
+    'ct87vsqrs': {
+      'en': 'Stop',
+      'ar': 'انهاء',
     },
     'lrohzr5c': {
       'en': 'Home',
