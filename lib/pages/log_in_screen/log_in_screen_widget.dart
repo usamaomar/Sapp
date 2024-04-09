@@ -465,7 +465,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                             },
                                           );
                                           setState(() {
-                                            FFAppState().fullStudentStateList =
+                                            FFAppState().fullParentStateList =
                                                 (getJsonField(
                                               (_model.apiResultqus?.jsonBody ??
                                                   ''),
@@ -473,16 +473,15 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                               true,
                                             )!
                                                             .toList()
-                                                            .map<FullStudentModelStruct?>(
-                                                                FullStudentModelStruct
+                                                            .map<ParentModelStruct?>(
+                                                                ParentModelStruct
                                                                     .maybeFromMap)
                                                             .toList()
                                                         as Iterable<
-                                                            FullStudentModelStruct?>)
+                                                            ParentModelStruct?>)
                                                     .withoutNulls
                                                     .toList()
-                                                    .cast<
-                                                        FullStudentModelStruct>();
+                                                    .cast<ParentModelStruct>();
                                           });
                                           if (shouldSetState) setState(() {});
                                           return;

@@ -1,6 +1,5 @@
 // ignore_for_file: unnecessary_getters_setters
 
-import '/backend/schema/util/schema_util.dart';
 
 import 'index.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -28,6 +27,7 @@ class ParentModelStruct extends BaseStruct {
     String? profilePhotoUrl,
     String? pathUserImage,
     String? pathAnotherParentImage,
+    List<StudentModelStruct>? students,
   })  : _id = id,
         _name = name,
         _email = email,
@@ -48,7 +48,8 @@ class ParentModelStruct extends BaseStruct {
         _anotherParentName = anotherParentName,
         _profilePhotoUrl = profilePhotoUrl,
         _pathUserImage = pathUserImage,
-        _pathAnotherParentImage = pathAnotherParentImage;
+        _pathAnotherParentImage = pathAnotherParentImage,
+        _students = students;
 
   // "id" field.
   int? _id;
@@ -180,6 +181,14 @@ class ParentModelStruct extends BaseStruct {
   set pathAnotherParentImage(String? val) => _pathAnotherParentImage = val;
   bool hasPathAnotherParentImage() => _pathAnotherParentImage != null;
 
+  // "students" field.
+  List<StudentModelStruct>? _students;
+  List<StudentModelStruct> get students => _students ?? const [];
+  set students(List<StudentModelStruct>? val) => _students = val;
+  void updateStudents(Function(List<StudentModelStruct>) updateFn) =>
+      updateFn(_students ??= []);
+  bool hasStudents() => _students != null;
+
   static ParentModelStruct fromMap(Map<String, dynamic> data) =>
       ParentModelStruct(
         id: castToType<int>(data['id']),
@@ -203,6 +212,10 @@ class ParentModelStruct extends BaseStruct {
         profilePhotoUrl: data['profile_photo_url'] as String?,
         pathUserImage: data['path_user_image'] as String?,
         pathAnotherParentImage: data['path_another_parent_image'] as String?,
+        students: getStructList(
+          data['students'],
+          StudentModelStruct.fromMap,
+        ),
       );
 
   static ParentModelStruct? maybeFromMap(dynamic data) => data is Map
@@ -231,6 +244,7 @@ class ParentModelStruct extends BaseStruct {
         'profile_photo_url': _profilePhotoUrl,
         'path_user_image': _pathUserImage,
         'path_another_parent_image': _pathAnotherParentImage,
+        'students': _students?.map((e) => e.toMap()).toList(),
       }.withoutNulls;
 
   @override
@@ -318,6 +332,11 @@ class ParentModelStruct extends BaseStruct {
         'path_another_parent_image': serializeParam(
           _pathAnotherParentImage,
           ParamType.String,
+        ),
+        'students': serializeParam(
+          _students,
+          ParamType.DataStruct,
+          true,
         ),
       }.withoutNulls;
 
@@ -428,6 +447,12 @@ class ParentModelStruct extends BaseStruct {
           ParamType.String,
           false,
         ),
+        students: deserializeStructParam<StudentModelStruct>(
+          data['students'],
+          ParamType.DataStruct,
+          true,
+          structBuilder: StudentModelStruct.fromSerializableMap,
+        ),
       );
 
   @override
@@ -435,6 +460,7 @@ class ParentModelStruct extends BaseStruct {
 
   @override
   bool operator ==(Object other) {
+    const listEquality = ListEquality();
     return other is ParentModelStruct &&
         id == other.id &&
         name == other.name &&
@@ -456,7 +482,8 @@ class ParentModelStruct extends BaseStruct {
         anotherParentName == other.anotherParentName &&
         profilePhotoUrl == other.profilePhotoUrl &&
         pathUserImage == other.pathUserImage &&
-        pathAnotherParentImage == other.pathAnotherParentImage;
+        pathAnotherParentImage == other.pathAnotherParentImage &&
+        listEquality.equals(students, other.students);
   }
 
   @override
@@ -481,7 +508,8 @@ class ParentModelStruct extends BaseStruct {
         anotherParentName,
         profilePhotoUrl,
         pathUserImage,
-        pathAnotherParentImage
+        pathAnotherParentImage,
+        students
       ]);
 }
 

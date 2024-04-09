@@ -41,12 +41,11 @@ class FFAppState extends ChangeNotifier {
       }
     });
     _safeInit(() {
-      _fullStudentStateList = prefs
-              .getStringList('ff_fullStudentStateList')
+      _fullParentStateList = prefs
+              .getStringList('ff_fullParentStateList')
               ?.map((x) {
                 try {
-                  return FullStudentModelStruct.fromSerializableMap(
-                      jsonDecode(x));
+                  return ParentModelStruct.fromSerializableMap(jsonDecode(x));
                 } catch (e) {
                   print("Can't decode persisted data type. Error: $e.");
                   return null;
@@ -54,7 +53,7 @@ class FFAppState extends ChangeNotifier {
               })
               .withoutNulls
               .toList() ??
-          _fullStudentStateList;
+          _fullParentStateList;
     });
   }
 
@@ -89,47 +88,46 @@ class FFAppState extends ChangeNotifier {
     prefs.setString('ff_TokenModelState', _TokenModelState.serialize());
   }
 
-  List<FullStudentModelStruct> _fullStudentStateList = [];
-  List<FullStudentModelStruct> get fullStudentStateList =>
-      _fullStudentStateList;
-  set fullStudentStateList(List<FullStudentModelStruct> value) {
-    _fullStudentStateList = value;
+  List<ParentModelStruct> _fullParentStateList = [];
+  List<ParentModelStruct> get fullParentStateList => _fullParentStateList;
+  set fullParentStateList(List<ParentModelStruct> value) {
+    _fullParentStateList = value;
     prefs.setStringList(
-        'ff_fullStudentStateList', value.map((x) => x.serialize()).toList());
+        'ff_fullParentStateList', value.map((x) => x.serialize()).toList());
   }
 
-  void addToFullStudentStateList(FullStudentModelStruct value) {
-    _fullStudentStateList.add(value);
-    prefs.setStringList('ff_fullStudentStateList',
-        _fullStudentStateList.map((x) => x.serialize()).toList());
+  void addToFullParentStateList(ParentModelStruct value) {
+    _fullParentStateList.add(value);
+    prefs.setStringList('ff_fullParentStateList',
+        _fullParentStateList.map((x) => x.serialize()).toList());
   }
 
-  void removeFromFullStudentStateList(FullStudentModelStruct value) {
-    _fullStudentStateList.remove(value);
-    prefs.setStringList('ff_fullStudentStateList',
-        _fullStudentStateList.map((x) => x.serialize()).toList());
+  void removeFromFullParentStateList(ParentModelStruct value) {
+    _fullParentStateList.remove(value);
+    prefs.setStringList('ff_fullParentStateList',
+        _fullParentStateList.map((x) => x.serialize()).toList());
   }
 
-  void removeAtIndexFromFullStudentStateList(int index) {
-    _fullStudentStateList.removeAt(index);
-    prefs.setStringList('ff_fullStudentStateList',
-        _fullStudentStateList.map((x) => x.serialize()).toList());
+  void removeAtIndexFromFullParentStateList(int index) {
+    _fullParentStateList.removeAt(index);
+    prefs.setStringList('ff_fullParentStateList',
+        _fullParentStateList.map((x) => x.serialize()).toList());
   }
 
-  void updateFullStudentStateListAtIndex(
+  void updateFullParentStateListAtIndex(
     int index,
-    FullStudentModelStruct Function(FullStudentModelStruct) updateFn,
+    ParentModelStruct Function(ParentModelStruct) updateFn,
   ) {
-    _fullStudentStateList[index] = updateFn(_fullStudentStateList[index]);
-    prefs.setStringList('ff_fullStudentStateList',
-        _fullStudentStateList.map((x) => x.serialize()).toList());
+    _fullParentStateList[index] = updateFn(_fullParentStateList[index]);
+    prefs.setStringList('ff_fullParentStateList',
+        _fullParentStateList.map((x) => x.serialize()).toList());
   }
 
-  void insertAtIndexInFullStudentStateList(
-      int index, FullStudentModelStruct value) {
-    _fullStudentStateList.insert(index, value);
-    prefs.setStringList('ff_fullStudentStateList',
-        _fullStudentStateList.map((x) => x.serialize()).toList());
+  void insertAtIndexInFullParentStateList(
+      int index, ParentModelStruct value) {
+    _fullParentStateList.insert(index, value);
+    prefs.setStringList('ff_fullParentStateList',
+        _fullParentStateList.map((x) => x.serialize()).toList());
   }
 }
 
