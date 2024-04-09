@@ -90,7 +90,7 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
                       print('Button pressed ...');
                     },
                     text: FFLocalizations.of(context).getText(
-                      'oe5kkwcl' /* Go */,
+                      'lmv8tuce' /* Go */,
                     ),
                     icon: const Icon(
                       Icons.call_missed_outgoing,
