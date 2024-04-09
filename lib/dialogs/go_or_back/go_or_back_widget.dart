@@ -91,7 +91,7 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
                       widget.actionGo?.call();
                     },
                     text: FFLocalizations.of(context).getText(
-                      'oe5kkwcl' /* Go */,
+                      'lmv8tuce' /* Go */,
                     ),
                     icon: const Icon(
                       Icons.call_missed_outgoing,
