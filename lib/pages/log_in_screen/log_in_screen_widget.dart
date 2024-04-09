@@ -426,7 +426,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                             ))!;
                                           });
 
-                                          context.pushNamed('MapPage');
+                                          context.pushReplacementNamed('MapPage');
 
                                           if (shouldSetState) setState(() {});
                                           return;
@@ -464,25 +464,6 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                               );
                                             },
                                           );
-                                          setState(() {
-                                            FFAppState().fullParentStateList =
-                                                (getJsonField(
-                                              (_model.apiResultqus?.jsonBody ??
-                                                  ''),
-                                              r'''$''',
-                                              true,
-                                            )!
-                                                            .toList()
-                                                            .map<ParentModelStruct?>(
-                                                                ParentModelStruct
-                                                                    .maybeFromMap)
-                                                            .toList()
-                                                        as Iterable<
-                                                            ParentModelStruct?>)
-                                                    .withoutNulls
-                                                    .toList()
-                                                    .cast<ParentModelStruct>();
-                                          });
                                           if (shouldSetState) setState(() {});
                                           return;
                                         }

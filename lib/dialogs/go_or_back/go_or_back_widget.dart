@@ -68,7 +68,6 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
                     hoverColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () async {
-                      context.safePop();
                       Navigator.pop(context);
                     },
                     child: Icon(

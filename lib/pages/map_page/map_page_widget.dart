@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../backend/api_requests/api_calls.dart';
-import '../../backend/schema/structs/full_student_model_struct.dart';
+import '../../backend/schema/structs/parent_model_struct.dart';
+import '../../flutter_flow/geo_utils.dart';
 import '/dialogs/go_or_back/go_or_back_widget.dart';
 import '/flutter_flow/flutter_flow_google_map.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -34,6 +35,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
   late StreamSubscription<Position> positionStream;
   late GoogleMapController mapController;
   late Set<Marker> markers;
+  Position? position;
 
   @override
   void initState() {
@@ -42,9 +44,14 @@ class _MapPageWidgetState extends State<MapPageWidget> {
     _model = createModel(context, () => MapPageModel());
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       setState(() {
-        FFAppState().fullStudentStateList.map((data) {
-          addPointAsMarker(data.student.id.toString(), double.parse(data.parent.lat), double.parse(data.parent.lng),
-              "assets/images/artboar.png", "${data.student.studentName}}",100);
+        FFAppState().fullParentStateList.map((data) {
+          addPointAsMarker(
+              data.id.toString(),
+              double.parse(data.lat),
+              double.parse(data.lng),
+              "assets/images/artboar.png",
+              "${data.name}",
+              100);
         }).toList();
       });
       await _determinePosition().then((value) {
@@ -52,8 +59,11 @@ class _MapPageWidgetState extends State<MapPageWidget> {
           mapController.animateCamera(CameraUpdate.newLatLngZoom(
               lats.LatLng(value.latitude, value.longitude), 18));
         });
+        addPointAsMarker('assets/images/bus_5.png', value.latitude,
+            value.longitude, "assets/images/bus_5.png", "-", 100);
       });
-      if (FFAppState().fullStudentStateList.isNotEmpty) {
+      if (FFAppState().fullParentStateList.isNotEmpty) {
+        positionStream.resume();
         getLocationApi();
       }
     });
@@ -90,21 +100,42 @@ class _MapPageWidgetState extends State<MapPageWidget> {
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((Position? position) {
       setState(() {
+        this.position = position;
         markers.clear();
-        FFAppState().fullStudentStateList.map((data) {
-          addPointAsMarker(data.student.id.toString(), double.parse(data.parent.lat), double.parse(data.parent.lng),
-              "assets/images/artboar.png", "${data.student.studentName}",100);
+        FFAppState().fullParentStateList.map((data) {
+          addPointAsMarker(
+              data.id.toString(),
+              double.parse(data.lat),
+              double.parse(data.lng),
+              "assets/images/artboar.png",
+              "${data.name}",
+              100);
         }).toList();
-        addPointAsMarker('assets/images/bus_5.png', position?.latitude ?? 0.0, position?.longitude ?? 0.0,
-            "assets/images/bus_5.png", "-",100);
+        addPointAsMarker('assets/images/bus_5.png', position?.latitude ?? 0.0,
+            position?.longitude ?? 0.0, "assets/images/bus_5.png", "-", 100);
       });
+
+      FFAppState().fullParentStateList.map((data) {
+        bool withinRadius = GeoUtils.isWithinRadius(
+            position?.latitude ?? 0.0,
+            position?.longitude ?? 0.0,
+            double.parse(data.lat),
+            double.parse(data.lng),
+            5);
+        if (withinRadius) {
+          print('inside');
+        } else {
+          print('out');
+        }
+      }).toList();
     });
   }
 
   @override
   void dispose() {
     _model.dispose();
-
+    positionStream.pause();
+    positionStream.cancel();
     super.dispose();
   }
 
@@ -171,11 +202,21 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                       LatLng(value.latitude, value.longitude);
                                 });
                                 if (FFAppState()
-                                    .fullStudentStateList
+                                    .fullParentStateList
                                     .isNotEmpty) {
                                   setState(() {
-                                    FFAppState().fullStudentStateList.clear();
+                                    FFAppState().fullParentStateList.clear();
                                   });
+                                  markers.clear();
+                                  positionStream.pause();
+                                  positionStream.cancel();
+                                  addPointAsMarker(
+                                      'assets/images/bus_5.png',
+                                      position?.latitude ?? 0.0,
+                                      position?.longitude ?? 0.0,
+                                      "assets/images/bus_5.png",
+                                      "-",
+                                      100);
                                 } else {
                                   await showDialog(
                                     context: context,
@@ -205,7 +246,9 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                         ),
                                       );
                                     },
-                                  ).then((value) => setState(() {}));
+                                  ).then((value) => setState(() {
+                                        positionStream.resume();
+                                      }));
                                 }
                               });
                             } else {
@@ -229,7 +272,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                             }
                           });
                         },
-                        text: FFAppState().fullStudentStateList.isNotEmpty
+                        text: FFAppState().fullParentStateList.isNotEmpty
                             ? FFLocalizations.of(context).getText(
                                 'ct87vsqrs' /* Stop */,
                               )
@@ -282,8 +325,8 @@ class _MapPageWidgetState extends State<MapPageWidget> {
     );
   }
 
-  void addPointAsMarker(
-      String id, double lat, double lng, String marker,String valueOfUpdatedObject,int value ) async {
+  void addPointAsMarker(String id, double lat, double lng, String marker,
+      String valueOfUpdatedObject, int value) async {
     await getBitmapDescriptorFromAssetBytes(marker, value).then((icon) {
       setState(() {
         markers.add(Marker(
@@ -326,18 +369,17 @@ class _MapPageWidgetState extends State<MapPageWidget> {
         _model.isLoading = false;
       });
       setState(() {
-        FFAppState().fullStudentStateList = (getJsonField(
+        FFAppState().fullParentStateList = (getJsonField(
           (_model.apiResultqus?.jsonBody ?? ''),
           r'''$''',
           true,
         )!
                 .toList()
-                .map<FullStudentModelStruct?>(
-                    FullStudentModelStruct.maybeFromMap)
-                .toList() as Iterable<FullStudentModelStruct?>)
+                .map<ParentModelStruct?>(ParentModelStruct.maybeFromMap)
+                .toList() as Iterable<ParentModelStruct?>)
             .withoutNulls
             .toList()
-            .cast<FullStudentModelStruct>();
+            .cast<ParentModelStruct>();
       });
       getLocationApi();
     } else {
