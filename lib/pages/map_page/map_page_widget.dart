@@ -351,18 +351,56 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                     .fullParentStateList
                                     .isNotEmpty) {
                                   setState(() {
-                                    FFAppState().fullParentStateList.clear();
+                                    _model.isLoading = true;
                                   });
-                                  markers.clear();
-                                  positionStream.pause();
-                                  positionStream.cancel();
-                                  addPointAsMarker(
-                                      'assets/images/bus_5.png',
-                                      position?.latitude ?? 0.0,
-                                      position?.longitude ?? 0.0,
-                                      "assets/images/bus_5.png",
-                                      FFAppState().UserModelState.name,
-                                      100);
+                                  _model.apiResultEndTrip = await StrackerApisGroup.endTripApiCall
+                                      .call(authorization: FFAppState().TokenModelState.token);
+                                  if ((_model.apiResultEndTrip?.succeeded ?? true)) {
+                                    setState(() {
+                                      _model.isLoading = false;
+                                    });
+                                    setState(() {
+                                      FFAppState().fullParentStateList.clear();
+                                      markers.clear();
+                                    });
+                                    positionStream.pause();
+                                    positionStream.cancel();
+                                    addPointAsMarker(
+                                        'assets/images/bus_5.png',
+                                        position?.latitude ?? 0.0,
+                                        position?.longitude ?? 0.0,
+                                        "assets/images/bus_5.png",
+                                        FFAppState().UserModelState.name,
+                                        100);
+                                  } else {
+                                    setState(() {
+                                      _model.isLoading = false;
+                                    });
+                                    await showDialog(
+                                      context: context,
+                                      builder: (alertDialogContext) {
+                                        return AlertDialog(
+                                          title: Text(FFLocalizations.of(context).getVariableText(
+                                            enText: 'Error',
+                                            arText: 'خطا',
+                                          )),
+                                          content: Text(getJsonField(
+                                            (_model.apiResultqus?.jsonBody ?? ''),
+                                            r'''$.message''',
+                                          ).toString()),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(alertDialogContext),
+                                              child: Text(FFLocalizations.of(context).getVariableText(
+                                                enText: 'Ok',
+                                                arText: 'حسنا',
+                                              )),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
                                 } else {
                                   await showDialog(
                                     context: context,
