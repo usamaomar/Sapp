@@ -17,6 +17,11 @@ class StrackerApisGroup {
   };
   static LoginApiCall loginApiCall = LoginApiCall();
   static GetStudentApiCall getStudentApiCall = GetStudentApiCall();
+  static EndTripApiCall endTripApiCall = EndTripApiCall();
+  static UpdateStudentStatusApiCall updateStudentStatusApiCall =
+      UpdateStudentStatusApiCall();
+  static UpdateLiveLocationCall updateLiveLocationCall =
+      UpdateLiveLocationCall();
 }
 
 class LoginApiCall {
@@ -72,6 +77,91 @@ class GetStudentApiCall {
         'Authorization': 'Bearer $authorization',
       },
       params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+class EndTripApiCall {
+  Future<ApiCallResponse> call({
+    String? authorization = '',
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'endTripApi',
+      apiUrl: '${StrackerApisGroup.baseUrl}/tripEnd',
+      callType: ApiCallType.PUT,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authorization',
+      },
+      params: {},
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+class UpdateStudentStatusApiCall {
+  Future<ApiCallResponse> call({
+    String? studentId = '',
+    String? status = '',
+    String? authorization = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "student_id": "$studentId",
+  "status": "$status"
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'updateStudentStatusApi',
+      apiUrl: '${StrackerApisGroup.baseUrl}/updateStudentStatus',
+      callType: ApiCallType.POST,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authorization',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+class UpdateLiveLocationCall {
+  Future<ApiCallResponse> call({
+    String? lat = '',
+    String? lng = '',
+    String? authorization = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "lat": "$lat",
+  "lng": "$lng"
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'updateLiveLocation',
+      apiUrl: '${StrackerApisGroup.baseUrl}/updateLiveLocation',
+      callType: ApiCallType.POST,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authorization',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
       returnBody: true,
       encodeBodyUtf8: false,
       decodeUtf8: false,
