@@ -55,6 +55,10 @@ class FFAppState extends ChangeNotifier {
               .toList() ??
           _fullParentStateList;
     });
+    _safeInit(() {
+      _isLiveLocationStarted =
+          prefs.getBool('ff_isLiveLocationStarted') ?? _isLiveLocationStarted;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -128,6 +132,13 @@ class FFAppState extends ChangeNotifier {
     _fullParentStateList.insert(index, value);
     prefs.setStringList('ff_fullParentStateList',
         _fullParentStateList.map((x) => x.serialize()).toList());
+  }
+
+  bool _isLiveLocationStarted = false;
+  bool get isLiveLocationStarted => _isLiveLocationStarted;
+  set isLiveLocationStarted(bool value) {
+    _isLiveLocationStarted = value;
+    prefs.setBool('ff_isLiveLocationStarted', value);
   }
 }
 
