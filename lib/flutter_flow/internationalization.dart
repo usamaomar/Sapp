@@ -177,17 +177,6 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'ar': 'بعيد',
     },
   },
-  // ArriveOrDidnt
-  {
-    'upbiufi5': {
-      'en': 'Not Arrived',
-      'ar': 'تسجيل خروج',
-    },
-    'atyxkt8z': {
-      'en': 'Arrive',
-      'ar': 'يصل',
-    },
-  },
   // Miscellaneous
   {
     'qj6cnogt': {
