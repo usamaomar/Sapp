@@ -61,11 +61,11 @@ class LoginApiCall {
 
 class GetStudentApiCall {
   Future<ApiCallResponse> call({
-    String? authorization = '',
+    String? authorization = '',String goBack = 'go'
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'getStudentApi',
-      apiUrl: '${StrackerApisGroup.baseUrl}/getStudent',
+      apiUrl: '${StrackerApisGroup.baseUrl}/getStudent/$goBack',
       callType: ApiCallType.GET,
       headers: {
         'Accept': 'application/json',

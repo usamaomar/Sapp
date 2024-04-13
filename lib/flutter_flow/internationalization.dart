@@ -161,7 +161,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'en': 'Stop',
       'ar': 'انهاء',
     },
-    'oe5kkwcl': {
+    'oe5kkwclc': {
       'en': 'LogOut',
       'ar': 'تسجيل خروج',
     },
@@ -173,8 +173,8 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
   // GoOrBack
   {
     'lmv8tuce': {
-      'en': 'Logout',
-      'ar': 'تسجيل خروج',
+      'en': 'Go',
+      'ar': 'ذهاب',
     },
     'oe5kkwcl': {
       'en': 'Go',
@@ -189,11 +189,11 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
   {
     'upbiufi5': {
       'en': 'Not Arrived',
-      'ar': 'تسجيل خروج',
+      'ar': 'لم يصل',
     },
     'atyxkt8z': {
       'en': 'Arrive',
-      'ar': 'يصل',
+      'ar': 'وصل',
     },
   },
   // Miscellaneous

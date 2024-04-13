@@ -21,6 +21,7 @@ class MapPageModel extends FlutterFlowModel<MapPageWidget> {
   //     studentsLocationsList[index] = updateFn(studentsLocationsList[index]);
   ApiCallResponse? apiResultqus;
   bool isLoading = false;
+  bool lockDialog = false;
   ///  State fields for stateful widgets in this page.
 
   final unfocusNode = FocusNode();

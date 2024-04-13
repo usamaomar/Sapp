@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../backend/api_requests/api_calls.dart';
 import '../../backend/schema/structs/parent_model_struct.dart';
+import '../../dialogs/arrive_or_didnt/arrive_or_didnt_widget.dart';
 import '../../flutter_flow/geo_utils.dart';
 import '/dialogs/go_or_back/go_or_back_widget.dart';
 import '/flutter_flow/flutter_flow_google_map.dart';
@@ -61,10 +62,10 @@ class _MapPageWidgetState extends State<MapPageWidget> {
               lats.LatLng(value.latitude, value.longitude), 18));
         });
         addPointAsMarker('assets/images/bus_5.png', value.latitude,
-            value.longitude, "assets/images/bus_5.png", "-", 100);
+            value.longitude, "assets/images/bus_5.png", FFAppState().UserModelState.name, 100);
       });
       if (FFAppState().fullParentStateList.isNotEmpty) {
-        positionStream.resume();
+        // positionStream.resume();
         getLocationApi();
       }
     });
@@ -113,17 +114,46 @@ class _MapPageWidgetState extends State<MapPageWidget> {
               100);
         }).toList();
         addPointAsMarker('assets/images/bus_5.png', position?.latitude ?? 0.0,
-            position?.longitude ?? 0.0, "assets/images/bus_5.png", "-", 100);
+            position?.longitude ?? 0.0, "assets/images/bus_5.png", FFAppState().UserModelState.name, 100);
       });
 
-      FFAppState().fullParentStateList.map((data) {
+      FFAppState().fullParentStateList.map((data) async{
         bool withinRadius = GeoUtils.isWithinRadius(
             position?.latitude ?? 0.0,
             position?.longitude ?? 0.0,
             double.parse(data.lat),
             double.parse(data.lng),
-            5);
+            500);
         if (withinRadius) {
+          if(!_model.lockDialog){
+            _model.lockDialog = true;
+            await showDialog(
+            context: context,
+            builder: (dialogContext) {
+              return Dialog(
+                elevation: 0,
+                insetPadding: EdgeInsets.zero,
+                backgroundColor: Colors.transparent,
+                alignment:
+                const AlignmentDirectional(0.0, 0.0)
+                    .resolve(
+                    Directionality.of(context)),
+                child: GestureDetector(
+                  onTap: () => _model
+                      .unfocusNode.canRequestFocus
+                      ? FocusScope.of(context)
+                      .requestFocus(
+                      _model.unfocusNode)
+                      : FocusScope.of(context)
+                      .unfocus(),
+                  child:   ArriveOrDidntWidget(parentModelStruct: data,),
+                ),
+              );
+            },
+            ).then((value) => setState(() {
+              _model.lockDialog = false;
+            }));
+          }
           print('inside');
         } else {
           print('out');
@@ -158,7 +188,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
             mainAxisSize: MainAxisSize.max,
             children: [
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 10.0, 10.0),
+                padding: const EdgeInsetsDirectional.fromSTEB(10.0, 30.0, 10.0, 10.0),
                 child: Container(
                   width: 120.0,
                   height: 120.0,
@@ -167,7 +197,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                     shape: BoxShape.circle,
                   ),
                   child: Image.network(
-                    'https://picsum.photos/seed/230/600',
+                    FFAppState().UserModelState.profilePhotoPath,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -206,7 +236,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                   context.goNamed('LogInScreen');
                                 },
                                 text: FFLocalizations.of(context).getText(
-                                  'oe5kkwcl' /* LogOut */,
+                                  'oe5kkwclc' /* LogOut */,
                                 ),
                                 options: FFButtonOptions(
                                   height: 40.0,
@@ -288,6 +318,8 @@ class _MapPageWidgetState extends State<MapPageWidget> {
               GoogleMap(
                 zoomControlsEnabled: false,
                 myLocationEnabled: true,
+                compassEnabled: false,
+                mapToolbarEnabled: false,
                 myLocationButtonEnabled: false,
                 onMapCreated: (GoogleMapController controller) {
                   mapController = controller;
@@ -329,7 +361,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                       position?.latitude ?? 0.0,
                                       position?.longitude ?? 0.0,
                                       "assets/images/bus_5.png",
-                                      "-",
+                                      FFAppState().UserModelState.name,
                                       100);
                                 } else {
                                   await showDialog(
@@ -355,7 +387,9 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                             actionGo: () async {
                                               actionGO();
                                             },
-                                            actionBack: () async {},
+                                            actionBack: () async {
+
+                                            },
                                           ),
                                         ),
                                       );
@@ -477,7 +511,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
       _model.isLoading = true;
     });
     _model.apiResultqus = await StrackerApisGroup.getStudentApiCall
-        .call(authorization: FFAppState().TokenModelState.token);
+        .call(authorization: FFAppState().TokenModelState.token,goBack: 'go');
     if ((_model.apiResultqus?.succeeded ?? true)) {
       setState(() {
         _model.isLoading = false;
