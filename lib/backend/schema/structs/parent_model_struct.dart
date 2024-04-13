@@ -28,6 +28,7 @@ class ParentModelStruct extends BaseStruct {
     String? pathUserImage,
     String? pathAnotherParentImage,
     List<StudentModelStruct>? students,
+    bool? isShowOnMap,
   })  : _id = id,
         _name = name,
         _email = email,
@@ -49,7 +50,8 @@ class ParentModelStruct extends BaseStruct {
         _profilePhotoUrl = profilePhotoUrl,
         _pathUserImage = pathUserImage,
         _pathAnotherParentImage = pathAnotherParentImage,
-        _students = students;
+        _students = students,
+        _isShowOnMap = isShowOnMap;
 
   // "id" field.
   int? _id;
@@ -189,6 +191,12 @@ class ParentModelStruct extends BaseStruct {
       updateFn(_students ??= []);
   bool hasStudents() => _students != null;
 
+  // "isShowOnMap" field.
+  bool? _isShowOnMap;
+  bool get isShowOnMap => _isShowOnMap ?? false;
+  set isShowOnMap(bool? val) => _isShowOnMap = val;
+  bool hasIsShowOnMap() => _isShowOnMap != null;
+
   static ParentModelStruct fromMap(Map<String, dynamic> data) =>
       ParentModelStruct(
         id: castToType<int>(data['id']),
@@ -216,6 +224,7 @@ class ParentModelStruct extends BaseStruct {
           data['students'],
           StudentModelStruct.fromMap,
         ),
+        isShowOnMap: data['isShowOnMap'] as bool?,
       );
 
   static ParentModelStruct? maybeFromMap(dynamic data) => data is Map
@@ -245,6 +254,7 @@ class ParentModelStruct extends BaseStruct {
         'path_user_image': _pathUserImage,
         'path_another_parent_image': _pathAnotherParentImage,
         'students': _students?.map((e) => e.toMap()).toList(),
+        'isShowOnMap': _isShowOnMap,
       }.withoutNulls;
 
   @override
@@ -337,6 +347,10 @@ class ParentModelStruct extends BaseStruct {
           _students,
           ParamType.DataStruct,
           true,
+        ),
+        'isShowOnMap': serializeParam(
+          _isShowOnMap,
+          ParamType.bool,
         ),
       }.withoutNulls;
 
@@ -453,6 +467,11 @@ class ParentModelStruct extends BaseStruct {
           true,
           structBuilder: StudentModelStruct.fromSerializableMap,
         ),
+        isShowOnMap: deserializeParam(
+          data['isShowOnMap'],
+          ParamType.bool,
+          false,
+        ),
       );
 
   @override
@@ -483,7 +502,8 @@ class ParentModelStruct extends BaseStruct {
         profilePhotoUrl == other.profilePhotoUrl &&
         pathUserImage == other.pathUserImage &&
         pathAnotherParentImage == other.pathAnotherParentImage &&
-        listEquality.equals(students, other.students);
+        listEquality.equals(students, other.students) &&
+        isShowOnMap == other.isShowOnMap;
   }
 
   @override
@@ -509,7 +529,8 @@ class ParentModelStruct extends BaseStruct {
         profilePhotoUrl,
         pathUserImage,
         pathAnotherParentImage,
-        students
+        students,
+        isShowOnMap
       ]);
 }
 
@@ -535,6 +556,7 @@ ParentModelStruct createParentModelStruct({
   String? profilePhotoUrl,
   String? pathUserImage,
   String? pathAnotherParentImage,
+  bool? isShowOnMap,
 }) =>
     ParentModelStruct(
       id: id,
@@ -558,4 +580,5 @@ ParentModelStruct createParentModelStruct({
       profilePhotoUrl: profilePhotoUrl,
       pathUserImage: pathUserImage,
       pathAnotherParentImage: pathAnotherParentImage,
+      isShowOnMap: isShowOnMap,
     );
