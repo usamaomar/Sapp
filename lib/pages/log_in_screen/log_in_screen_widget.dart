@@ -25,34 +25,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final animationsMap = {
-    'columnOnPageLoadAnimation': AnimationInfo(
-      trigger: AnimationTrigger.onPageLoad,
-      effects: [
-        FadeEffect(
-          curve: Curves.easeInOut,
-          delay: 0.ms,
-          duration: 300.ms,
-          begin: 0.0,
-          end: 1.0,
-        ),
-        MoveEffect(
-          curve: Curves.easeInOut,
-          delay: 0.ms,
-          duration: 300.ms,
-          begin: const Offset(0.0, 60.0),
-          end: const Offset(0.0, 0.0),
-        ),
-        TiltEffect(
-          curve: Curves.easeInOut,
-          delay: 0.ms,
-          duration: 300.ms,
-          begin: const Offset(-0.349, 0),
-          end: const Offset(0, 0),
-        ),
-      ],
-    ),
-  };
+  final animationsMap = <String, AnimationInfo>{};
 
   @override
   void initState() {
@@ -67,11 +40,40 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
       });
     });
 
-    _model.emailAddressController ??= TextEditingController();
+    _model.emailAddressTextController ??= TextEditingController();
     _model.emailAddressFocusNode ??= FocusNode();
 
-    _model.passwordController ??= TextEditingController();
+    _model.passwordTextController ??= TextEditingController();
     _model.passwordFocusNode ??= FocusNode();
+
+    animationsMap.addAll({
+      'columnOnPageLoadAnimation': AnimationInfo(
+        trigger: AnimationTrigger.onPageLoad,
+        effectsBuilder: () => [
+          FadeEffect(
+            curve: Curves.easeInOut,
+            delay: 0.0.ms,
+            duration: 300.0.ms,
+            begin: 0.0,
+            end: 1.0,
+          ),
+          MoveEffect(
+            curve: Curves.easeInOut,
+            delay: 0.0.ms,
+            duration: 300.0.ms,
+            begin: const Offset(0.0, 60.0),
+            end: const Offset(0.0, 0.0),
+          ),
+          TiltEffect(
+            curve: Curves.easeInOut,
+            delay: 0.0.ms,
+            duration: 300.0.ms,
+            begin: const Offset(-0.349, 0),
+            end: const Offset(0, 0),
+          ),
+        ],
+      ),
+    });
   }
 
   @override
@@ -142,10 +144,10 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                               SizedBox(
                                 width: double.infinity,
                                 child: TextFormField(
-                                  controller: _model.emailAddressController,
+                                  controller: _model.emailAddressTextController,
                                   focusNode: _model.emailAddressFocusNode,
                                   onChanged: (_) => EasyDebounce.debounce(
-                                    '_model.emailAddressController',
+                                    '_model.emailAddressTextController',
                                     const Duration(milliseconds: 2000),
                                     () async {
                                       setState(() {
@@ -223,7 +225,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                   cursorColor:
                                       FlutterFlowTheme.of(context).primary,
                                   validator: _model
-                                      .emailAddressControllerValidator
+                                      .emailAddressTextControllerValidator
                                       .asValidator(context),
                                 ),
                               ),
@@ -251,7 +253,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                 child: SizedBox(
                                   width: double.infinity,
                                   child: TextFormField(
-                                    controller: _model.passwordController,
+                                    controller: _model.passwordTextController,
                                     focusNode: _model.passwordFocusNode,
                                     onFieldSubmitted: (_) async {
                                       setState(() {
@@ -344,7 +346,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                     cursorColor:
                                         FlutterFlowTheme.of(context).primary,
                                     validator: _model
-                                        .passwordControllerValidator
+                                        .passwordTextControllerValidator
                                         .asValidator(context),
                                   ),
                                 ),
@@ -375,12 +377,14 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                   child: FFButtonWidget(
                                     onPressed: () async {
                                       var shouldSetState = false;
-                                      if (_model.emailAddressController.text !=
+                                      if (_model.emailAddressTextController
+                                                  .text !=
                                               '') {
                                         setState(() {
                                           _model.emailNotValid = false;
                                         });
-                                        if (_model.passwordController.text ==
+                                        if (_model.passwordTextController
+                                                    .text ==
                                                 '') {
                                           setState(() {
                                             _model.passwordNotValid = true;
@@ -398,9 +402,10 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                                 .call(
                                           mobileNumber:
                                               functions.convertTo07Format(_model
-                                                  .emailAddressController.text),
-                                          password:
-                                              _model.passwordController.text,
+                                                  .emailAddressTextController
+                                                  .text),
+                                          password: _model
+                                              .passwordTextController.text,
                                         );
                                         shouldSetState = true;
                                         if ((_model.apiResultqus?.succeeded ??
