@@ -7,7 +7,8 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../backend/api_requests/api_calls.dart';
 import '../../backend/schema/structs/parent_model_struct.dart';
-import '../../dialogs/arrive_or_didnt/arrive_or_didnt_widget.dart';
+import '../../dialogs/arrive_or_didnt/arrive_or_didnt_away_widget.dart';
+import '../../dialogs/arrive_or_didnt_away/arrive_or_didnt_widget.dart';
 import '../../flutter_flow/geo_utils.dart';
 import '/dialogs/go_or_back/go_or_back_widget.dart';
 import '/flutter_flow/flutter_flow_google_map.dart';
@@ -61,40 +62,44 @@ class _MapPageWidgetState extends State<MapPageWidget> {
           mapController.animateCamera(CameraUpdate.newLatLngZoom(
               lats.LatLng(value.latitude, value.longitude), 18));
         });
-        addPointAsMarker('assets/images/bus_5.png', value.latitude,
-            value.longitude, "assets/images/bus_5.png", FFAppState().UserModelState.name, 100);
+        addPointAsMarker(
+            'assets/images/bus_5.png',
+            value.latitude,
+            value.longitude,
+            "assets/images/bus_5.png",
+            FFAppState().UserModelState.name,
+            100);
       });
-      if (FFAppState().fullParentStateList.isNotEmpty) {
-        // positionStream.resume();
+      if (FFAppState().isLiveLocationStarted) {
         getLocationApi();
       }
     });
   }
 
-  void getLocationApi() {
+  void getLocationAwayApi() {
     if (defaultTargetPlatform == TargetPlatform.android) {
       locationSettings = AndroidSettings(
-          accuracy: LocationAccuracy.best,
+          accuracy: LocationAccuracy.bestForNavigation,
           distanceFilter: 1,
           forceLocationManager: true,
           intervalDuration: const Duration(seconds: 0),
           foregroundNotificationConfig: const ForegroundNotificationConfig(
             notificationText: "Bus Location Is collected",
-            notificationTitle: "Trackllo",
+            notificationTitle: "SApp",
             enableWakeLock: true,
           ));
     } else if (defaultTargetPlatform == TargetPlatform.iOS ||
         defaultTargetPlatform == TargetPlatform.macOS) {
       locationSettings = AppleSettings(
-        accuracy: LocationAccuracy.best,
+        accuracy: LocationAccuracy.bestForNavigation,
         activityType: ActivityType.fitness,
         distanceFilter: 1,
         pauseLocationUpdatesAutomatically: true,
-        showBackgroundLocationIndicator: false,
+        showBackgroundLocationIndicator: true,
       );
     } else {
       locationSettings = const LocationSettings(
-        accuracy: LocationAccuracy.best,
+        accuracy: LocationAccuracy.bestForNavigation,
         distanceFilter: 1,
       );
     }
@@ -113,53 +118,132 @@ class _MapPageWidgetState extends State<MapPageWidget> {
               "${data.name}",
               100);
         }).toList();
-        addPointAsMarker('assets/images/bus_5.png', position?.latitude ?? 0.0,
-            position?.longitude ?? 0.0, "assets/images/bus_5.png", FFAppState().UserModelState.name, 100);
+        addPointAsMarker(
+            'assets/images/bus_5.png',
+            position?.latitude ?? 0.0,
+            position?.longitude ?? 0.0,
+            "assets/images/bus_5.png",
+            FFAppState().UserModelState.name,
+            100);
       });
+      apiStreamLiveLocation(position);
+    });
+  }
 
-      FFAppState().fullParentStateList.map((data) async{
+
+  void getLocationApi() {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      locationSettings = AndroidSettings(
+          accuracy: LocationAccuracy.bestForNavigation,
+          distanceFilter: 1,
+          forceLocationManager: true,
+          intervalDuration: const Duration(seconds: 0),
+          foregroundNotificationConfig: const ForegroundNotificationConfig(
+            notificationText: "Bus Location Is collected",
+            notificationTitle: "SApp",
+            enableWakeLock: true,
+          ));
+    } else if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      locationSettings = AppleSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+        activityType: ActivityType.fitness,
+        distanceFilter: 1,
+        pauseLocationUpdatesAutomatically: true,
+        showBackgroundLocationIndicator: true,
+      );
+    } else {
+      locationSettings = const LocationSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+        distanceFilter: 1,
+      );
+    }
+    positionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position? position) {
+      setState(() {
+        this.position = position;
+        markers.clear();
+        FFAppState().fullParentStateList.map((data) {
+          addPointAsMarker(
+              data.id.toString(),
+              double.parse(data.lat),
+              double.parse(data.lng),
+              "assets/images/artboar.png",
+              "${data.name}",
+              100);
+        }).toList();
+        addPointAsMarker(
+            'assets/images/bus_5.png',
+            position?.latitude ?? 0.0,
+            position?.longitude ?? 0.0,
+            "assets/images/bus_5.png",
+            FFAppState().UserModelState.name,
+            100);
+      });
+      int index = 0;
+      FFAppState().fullParentStateList.map((data) async {
         bool withinRadius = GeoUtils.isWithinRadius(
             position?.latitude ?? 0.0,
             position?.longitude ?? 0.0,
             double.parse(data.lat),
             double.parse(data.lng),
-            500);
+            20);
         if (withinRadius) {
-          if(!_model.lockDialog){
-            _model.lockDialog = true;
+          if (data.isShowOnMap == false) {
             await showDialog(
-            context: context,
-            builder: (dialogContext) {
-              return Dialog(
-                elevation: 0,
-                insetPadding: EdgeInsets.zero,
-                backgroundColor: Colors.transparent,
-                alignment:
-                const AlignmentDirectional(0.0, 0.0)
-                    .resolve(
-                    Directionality.of(context)),
-                child: GestureDetector(
-                  onTap: () => _model
-                      .unfocusNode.canRequestFocus
-                      ? FocusScope.of(context)
-                      .requestFocus(
-                      _model.unfocusNode)
-                      : FocusScope.of(context)
-                      .unfocus(),
-                  child:   ArriveOrDidntWidget(parentModelStruct: data,),
-                ),
-              );
-            },
+              context: context,
+              builder: (dialogContext) {
+                return Dialog(
+                  elevation: 0,
+                  insetPadding: EdgeInsets.zero,
+                  backgroundColor: Colors.transparent,
+                  alignment: const AlignmentDirectional(0.0, 0.0)
+                      .resolve(Directionality.of(context)),
+                  child: GestureDetector(
+                    onTap: () => _model.unfocusNode.canRequestFocus
+                        ? FocusScope.of(context)
+                            .requestFocus(_model.unfocusNode)
+                        : FocusScope.of(context).unfocus(),
+                    child: ArriveOrDidntWidget(
+                      parentModelStruct: data,
+                      actionFinish: () {
+                        setState(() {
+                          FFAppState().updateFullParentStateListAtIndex(index,(value){
+                            data.isShowOnMap = true;
+                            return data;
+                          });
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                );
+              },
             ).then((value) => setState(() {
-              _model.lockDialog = false;
-            }));
+                  data.isShowOnMap = false;
+           }));
           }
-          print('inside');
         } else {
           print('out');
         }
+        index = index+1;
       }).toList();
+      apiStreamLiveLocation(position);
     });
+  }
+
+  void apiStreamLiveLocation(Position? position) async {
+    if(FFAppState().isLiveLocationStarted) {
+      _model.apiResultLiveLocation =
+      await StrackerApisGroup.updateLiveLocationCall
+          .call(authorization: FFAppState().TokenModelState.token,
+          lat: (position?.latitude ?? 0.0).toString(),
+          lng: (position?.longitude ?? 0.0).toString());
+      if ((_model.apiResultLiveLocation?.succeeded ?? true)) {
+
+      }
+    }
   }
 
   @override
@@ -188,7 +272,8 @@ class _MapPageWidgetState extends State<MapPageWidget> {
             mainAxisSize: MainAxisSize.max,
             children: [
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(10.0, 30.0, 10.0, 10.0),
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                    10.0, 30.0, 10.0, 10.0),
                 child: Container(
                   width: 120.0,
                   height: 120.0,
@@ -203,7 +288,8 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 10.0, 0.0),
+                padding:
+                    const EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 10.0, 0.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -220,8 +306,8 @@ class _MapPageWidgetState extends State<MapPageWidget> {
               ),
               Flexible(
                 child: Padding(
-                  padding:
-                      const EdgeInsetsDirectional.fromSTEB(15.0, 15.0, 15.0, 15.0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                      15.0, 15.0, 15.0, 15.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -242,8 +328,9 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                   height: 40.0,
                                   padding: const EdgeInsetsDirectional.fromSTEB(
                                       24.0, 0.0, 24.0, 0.0),
-                                  iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 0.0, 0.0, 0.0),
+                                  iconPadding:
+                                      const EdgeInsetsDirectional.fromSTEB(
+                                          0.0, 0.0, 0.0, 0.0),
                                   color: FlutterFlowTheme.of(context).tertiary,
                                   textStyle: FlutterFlowTheme.of(context)
                                       .titleSmall
@@ -292,7 +379,8 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
+                padding:
+                    const EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
                 child: Text(
                   FFLocalizations.of(context).getText(
                     '8ejc2hr8' /* Map */,
@@ -342,22 +430,30 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                         onPressed: () async {
                           checkPermition().catchError((onError) async {
                             if (onError.toString().isEmpty) {
+                              setState(() {
+                                _model.isLoading = true;
+                              });
                               _determinePosition().then((value) async {
                                 setState(() {
                                   _model.googleMapsCenter =
                                       LatLng(value.latitude, value.longitude);
                                 });
-                                if (FFAppState()
-                                    .fullParentStateList
-                                    .isNotEmpty) {
-                                  setState(() {
-                                    _model.isLoading = true;
-                                  });
-                                  _model.apiResultEndTrip = await StrackerApisGroup.endTripApiCall
-                                      .call(authorization: FFAppState().TokenModelState.token);
-                                  if ((_model.apiResultEndTrip?.succeeded ?? true)) {
+                                setState(() {
+                                  _model.isLoading = true;
+                                });
+                                if (FFAppState().isLiveLocationStarted) {
+                                  _model.apiResultEndTrip =
+                                      await StrackerApisGroup.endTripApiCall
+                                          .call(
+                                              authorization: FFAppState()
+                                                  .TokenModelState
+                                                  .token);
+                                  if ((_model.apiResultEndTrip?.succeeded ??
+                                      true)) {
                                     setState(() {
                                       _model.isLoading = false;
+                                      FFAppState().isLiveLocationStarted =
+                                          false;
                                     });
                                     setState(() {
                                       FFAppState().fullParentStateList.clear();
@@ -380,18 +476,24 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                       context: context,
                                       builder: (alertDialogContext) {
                                         return AlertDialog(
-                                          title: Text(FFLocalizations.of(context).getVariableText(
+                                          title: Text(
+                                              FFLocalizations.of(context)
+                                                  .getVariableText(
                                             enText: 'Error',
                                             arText: 'خطا',
                                           )),
                                           content: Text(getJsonField(
-                                            (_model.apiResultqus?.jsonBody ?? ''),
+                                            (_model.apiResultqus?.jsonBody ??
+                                                ''),
                                             r'''$.message''',
                                           ).toString()),
                                           actions: [
                                             TextButton(
-                                              onPressed: () => Navigator.pop(alertDialogContext),
-                                              child: Text(FFLocalizations.of(context).getVariableText(
+                                              onPressed: () => Navigator.pop(
+                                                  alertDialogContext),
+                                              child: Text(
+                                                  FFLocalizations.of(context)
+                                                      .getVariableText(
                                                 enText: 'Ok',
                                                 arText: 'حسنا',
                                               )),
@@ -402,6 +504,9 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                     );
                                   }
                                 } else {
+                                  setState(() {
+                                    _model.isLoading = false;
+                                  });
                                   await showDialog(
                                     context: context,
                                     builder: (dialogContext) {
@@ -426,7 +531,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                               actionGO();
                                             },
                                             actionBack: () async {
-
+                                              actionAway();
                                             },
                                           ),
                                         ),
@@ -436,6 +541,10 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                         positionStream.resume();
                                       }));
                                 }
+                              }).catchError((err) {
+                                setState(() {
+                                  _model.isLoading = false;
+                                });
                               });
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -458,7 +567,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                             }
                           });
                         },
-                        text: FFAppState().fullParentStateList.isNotEmpty
+                        text: FFAppState().isLiveLocationStarted
                             ? FFLocalizations.of(context).getText(
                                 'ct87vsqrs' /* Stop */,
                               )
@@ -471,11 +580,15 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                               24.0, 0.0, 24.0, 0.0),
                           iconPadding: const EdgeInsetsDirectional.fromSTEB(
                               0.0, 0.0, 0.0, 0.0),
-                          color: FlutterFlowTheme.of(context).error,
+                          color: !FFAppState().isLiveLocationStarted
+                              ? Color(0xFFCBCBCC)
+                              : FlutterFlowTheme.of(context).error,
                           textStyle:
                               FlutterFlowTheme.of(context).titleSmall.override(
                                     fontFamily: 'Readex Pro',
-                                    color: FlutterFlowTheme.of(context).white,
+                                    color: !FFAppState().isLiveLocationStarted
+                                        ? Color(0xFF000000)
+                                        : FlutterFlowTheme.of(context).white,
                                     letterSpacing: 0.0,
                                   ),
                           elevation: 3.0,
@@ -544,12 +657,122 @@ class _MapPageWidgetState extends State<MapPageWidget> {
     return BitmapDescriptor.fromBytes(imageData!);
   }
 
+
+  void actionAway() async {
+    setState(() {
+      _model.isLoading = true;
+    });
+    _model.apiResultqus = await StrackerApisGroup.getStudentApiCall
+        .call(authorization: FFAppState().TokenModelState.token, goBack: 'away');
+    if ((_model.apiResultqus?.succeeded ?? true)) {
+      setState(() {
+        _model.isLoading = false;
+      });
+      setState(() {
+        FFAppState().fullParentStateList = (getJsonField(
+          (_model.apiResultqus?.jsonBody ?? ''),
+          r'''$''',
+          true,
+        )!
+            .toList()
+            .map<ParentModelStruct?>(ParentModelStruct.maybeFromMap)
+            .toList() as Iterable<ParentModelStruct?>)
+            .withoutNulls
+            .toList()
+            .cast<ParentModelStruct>();
+      });
+      if (FFAppState().fullParentStateList.isEmpty) {
+        await showDialog(
+          context: context,
+          builder: (alertDialogContext) {
+            return AlertDialog(
+              title: Text(FFLocalizations.of(context).getVariableText(
+                enText: 'Error',
+                arText: 'خطا',
+              )),
+              content: Text('لا يوجد طلاب للحضور'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(alertDialogContext),
+                  child: Text(FFLocalizations.of(context).getVariableText(
+                    enText: 'Ok',
+                    arText: 'حسنا',
+                  )),
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
+      setState(() {
+        FFAppState().isLiveLocationStarted = true;
+      });
+      FFAppState().fullParentStateList.forEach((data) async {
+        await showDialog(
+        context: context,
+        builder: (dialogContext) {
+          return Dialog(
+            elevation: 0,
+            insetPadding: EdgeInsets.zero,
+            backgroundColor: Colors.transparent,
+            alignment: const AlignmentDirectional(0.0, 0.0)
+                .resolve(Directionality.of(context)),
+            child: GestureDetector(
+              onTap: () => _model.unfocusNode.canRequestFocus
+                  ? FocusScope.of(context)
+                  .requestFocus(_model.unfocusNode)
+                  : FocusScope.of(context).unfocus(),
+              child: ArriveOrDidntWidget(
+                parentModelStruct: data,
+                actionFinish: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          );
+        },
+        );
+      });
+      getLocationAwayApi();
+    } else {
+      setState(() {
+        _model.isLoading = false;
+      });
+      await showDialog(
+        context: context,
+        builder: (alertDialogContext) {
+          return AlertDialog(
+            title: Text(FFLocalizations.of(context).getVariableText(
+              enText: 'Error',
+              arText: 'خطا',
+            )),
+            content: Text(getJsonField(
+              (_model.apiResultqus?.jsonBody ?? ''),
+              r'''$.message''',
+            ).toString()),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(alertDialogContext),
+                child: Text(FFLocalizations.of(context).getVariableText(
+                  enText: 'Ok',
+                  arText: 'حسنا',
+                )),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+
   void actionGO() async {
     setState(() {
       _model.isLoading = true;
     });
     _model.apiResultqus = await StrackerApisGroup.getStudentApiCall
-        .call(authorization: FFAppState().TokenModelState.token,goBack: 'go');
+        .call(authorization: FFAppState().TokenModelState.token, goBack: 'go');
     if ((_model.apiResultqus?.succeeded ?? true)) {
       setState(() {
         _model.isLoading = false;
@@ -566,6 +789,36 @@ class _MapPageWidgetState extends State<MapPageWidget> {
             .withoutNulls
             .toList()
             .cast<ParentModelStruct>();
+        FFAppState().fullParentStateList.forEach((element) {
+          element.isShowOnMap = false ;
+        });
+      });
+      if (FFAppState().fullParentStateList.isEmpty) {
+        await showDialog(
+          context: context,
+          builder: (alertDialogContext) {
+            return AlertDialog(
+              title: Text(FFLocalizations.of(context).getVariableText(
+                enText: 'Error',
+                arText: 'خطا',
+              )),
+              content: Text('لا يوجد طلاب للاضافة'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(alertDialogContext),
+                  child: Text(FFLocalizations.of(context).getVariableText(
+                    enText: 'Ok',
+                    arText: 'حسنا',
+                  )),
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
+      setState(() {
+        FFAppState().isLiveLocationStarted = true;
       });
       getLocationApi();
     } else {

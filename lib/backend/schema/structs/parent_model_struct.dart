@@ -211,7 +211,7 @@ class ParentModelStruct extends BaseStruct {
         mobileNumberCountry: data['mobile_number_country'] as String?,
         lat: data['lat'] as String?,
         lng: data['lng'] as String?,
-        distance: data['distance'] as String?,
+        distance: data['distance'].toString(),
         dateOfBirth: data['date_of_birth'] as String?,
         currentTeamId: castToType<int>(data['current_team_id']),
         profilePhotoPath: data['profile_photo_path'] as String?,

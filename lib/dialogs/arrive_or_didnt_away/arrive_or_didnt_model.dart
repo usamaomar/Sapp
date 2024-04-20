@@ -1,3 +1,4 @@
+import '../../backend/api_requests/api_manager.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'arrive_or_didnt_widget.dart' show ArriveOrDidntWidget;
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ class ArriveOrDidntModel extends FlutterFlowModel<ArriveOrDidntWidget> {
 
   // State field(s) for SwipeableStack widget.
   late CardSwiperController swipeableStackController;
+  ApiCallResponse? apiUpdateStudentStatusApiCall;
 
   @override
   void initState(BuildContext context) {
