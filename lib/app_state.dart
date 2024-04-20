@@ -59,6 +59,9 @@ class FFAppState extends ChangeNotifier {
       _isLiveLocationStarted =
           prefs.getBool('ff_isLiveLocationStarted') ?? _isLiveLocationStarted;
     });
+    _safeInit(() {
+      _isGoStateIsSet = prefs.getBool('ff_isGoStateIsSet') ?? _isGoStateIsSet;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -139,6 +142,13 @@ class FFAppState extends ChangeNotifier {
   set isLiveLocationStarted(bool value) {
     _isLiveLocationStarted = value;
     prefs.setBool('ff_isLiveLocationStarted', value);
+  }
+
+  bool _isGoStateIsSet = false;
+  bool get isGoStateIsSet => _isGoStateIsSet;
+  set isGoStateIsSet(bool value) {
+    _isGoStateIsSet = value;
+    prefs.setBool('ff_isGoStateIsSet', value);
   }
 }
 
