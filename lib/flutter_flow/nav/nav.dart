@@ -52,6 +52,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'MapPage',
           path: '/mapPage',
           builder: (context, params) => const MapPageWidget(),
+        ),
+        FFRoute(
+          name: 'ParentMapPage',
+          path: '/parentMapPage',
+          builder: (context, params) => const ParentMapPageWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );

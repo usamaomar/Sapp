@@ -166,6 +166,25 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'ar': '',
     },
   },
+  // ParentMapPage
+  {
+    'v8xb5utm': {
+      'en': 'Map',
+      'ar': 'الخارطة',
+    },
+    'wgly278i': {
+      'en': 'Start',
+      'ar': 'يبدأ',
+    },
+    '92mmx9tu': {
+      'en': 'LogOut',
+      'ar': 'تسجيل خروج',
+    },
+    'l1647p6l': {
+      'en': 'Home',
+      'ar': '',
+    },
+  },
   // GoOrBack
   {
     'lmv8tuce': {
