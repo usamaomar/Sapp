@@ -159,7 +159,7 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
     },
     'oe5kkwcl': {
       'en': 'LogOut',
-      'ar': 'تسجيل خروج',
+      'ar': 'تحديث',
     },
     'lrohzr5c': {
       'en': 'Home',
@@ -185,6 +185,67 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'ar': '',
     },
   },
+  // MyProfilePage
+  {
+    't41q60s6': {
+      'en': 'Name',
+      'ar': 'الاسم',
+    },
+    'g4p4jjlu': {
+      'en': 'Password',
+      'ar': 'كلمة المرور',
+    },
+    '1q5ljbjv': {
+      'en': 'Update',
+      'ar': 'تحديث',
+    },
+    'u6hl7ygb': {
+      'en': 'My Profile',
+      'ar': '',
+    },
+    'eh0nyhep': {
+      'en': 'Home',
+      'ar': '',
+    },
+  },
+  // MyStudentsPage
+  {
+    '64v3k77t': {
+      'en': 'My Students',
+      'ar': 'طلابي',
+    },
+    'tsrihsl5': {
+      'en': 'Home',
+      'ar': '',
+    },
+  },
+  // AddStudentsPage
+  {
+    'k07gswuf': {
+      'en': 'Add Student Image',
+      'ar': 'إضافة صورة الطالب',
+    },
+    '9h9xapb5': {
+      'en': 'Add Student Name',
+      'ar': 'إضافة اسم الطالب',
+    },
+    'cdb7hzor': {
+      'en': 'Name',
+      'ar': 'الاسم',
+    },
+    'z8uwoplo': {
+      'en': 'Select Branch',
+      'ar': 'حدد الفرع',
+    },
+    'sd5npisy': {
+      'en': 'Add Student',
+      'ar': 'إضافة طالب',
+    },
+    '96sh4eez': {
+      'en': 'Home',
+      'ar': '',
+    },
+  },
   // GoOrBack
   {
     'lmv8tuce': {
@@ -194,6 +255,13 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
     'ainho1h0': {
       'en': 'Away',
       'ar': 'بعيد',
+    },
+  },
+  // MapSelectionLocation
+  {
+    'lq1sj947': {
+      'en': 'Select Point From Map',
+      'ar': 'حدد نقطة من الخريطة',
     },
   },
   // Miscellaneous

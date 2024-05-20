@@ -57,6 +57,21 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'ParentMapPage',
           path: '/parentMapPage',
           builder: (context, params) => const ParentMapPageWidget(),
+        ),
+        FFRoute(
+          name: 'MyProfilePage',
+          path: '/myProfilePage',
+          builder: (context, params) => const MyProfilePageWidget(),
+        ),
+        FFRoute(
+          name: 'MyStudentsPage',
+          path: '/myStudentsPage',
+          builder: (context, params) => const MyStudentsPageWidget(),
+        ),
+        FFRoute(
+          name: 'AddStudentsPage',
+          path: '/addStudentsPage',
+          builder: (context, params) => const AddStudentsPageWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
