@@ -4,13 +4,18 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../backend/api_requests/api_calls.dart';
 import '../../backend/schema/structs/parent_model_struct.dart';
+import '../../backend/schema/structs/token_model_struct.dart';
+import '../../backend/schema/structs/user_model_struct.dart';
 import '../../dialogs/arrive_or_didnt/arrive_or_didnt_away_widget.dart';
 import '../../dialogs/arrive_or_didnt_away/arrive_or_didnt_widget.dart';
 import '../../flutter_flow/geo_utils.dart';
+import '../../flutter_flow/lat_lng.dart';
+import '../../flutter_flow/lat_lng.dart';
 import '/dialogs/go_or_back/go_or_back_widget.dart';
 import '/flutter_flow/flutter_flow_google_map.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -19,10 +24,14 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:provider/provider.dart';
-import 'map_page_model.dart';
-export 'map_page_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as lats;
+import 'package:google_maps_flutter_platform_interface/src/types/location.dart' as latsdsd;
+
+
 import 'dart:ui' as ui;
+import "package:google_maps_directions/google_maps_directions.dart" as gmd;
+
+import 'map_page_model.dart';
 
 class MapPageWidget extends StatefulWidget {
   const MapPageWidget({super.key});
@@ -30,6 +39,7 @@ class MapPageWidget extends StatefulWidget {
   @override
   State<MapPageWidget> createState() => _MapPageWidgetState();
 }
+
 class _MapPageWidgetState extends State<MapPageWidget> {
   late MapPageModel _model;
   LatLng? currentLocation;
@@ -39,6 +49,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
   late GoogleMapController mapController;
   late Set<Marker> markers;
   Position? position;
+
   // LatLng? currentLatLng;
 
   @override
@@ -164,14 +175,14 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                             return data;
                           });
                         });
-                        Navigator.pop(context,true);
+                        Navigator.pop(context, true);
                       },
                     ),
                   ),
                 );
               },
             ).then((value) {
-              if(value != true){
+              if (value != true) {
                 setState(() {
                   data.isShowOnMap = false;
                 });
@@ -271,6 +282,8 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                             Expanded(
                               child: FFButtonWidget(
                                 onPressed: () async {
+                                  FFAppState().UserModelState = UserModelStruct();
+                                  FFAppState().TokenModelState = TokenModelStruct();
                                   context.goNamed('LogInScreen');
                                 },
                                 text: FFLocalizations.of(context).getText(
@@ -326,7 +339,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                 },
                 child: Icon(
                   Icons.list_outlined,
-                  color: FlutterFlowTheme.of(context).alternate,
+                  color: FlutterFlowTheme.of(context).white,
                   size: 35.0,
                 ),
               ),
@@ -360,6 +373,7 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                 myLocationEnabled: true,
                 compassEnabled: false,
                 mapToolbarEnabled: false,
+                polylines: Set.of(_model.polylines ?? []),
                 myLocationButtonEnabled: false,
                 onMapCreated: (GoogleMapController controller) {
                   mapController = controller;
@@ -382,80 +396,78 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                         onPressed: () async {
                           checkPermition().catchError((onError) async {
                             if (onError.toString().isEmpty) {
-                                if (FFAppState().isLiveLocationStarted) {
+                              if (FFAppState().isLiveLocationStarted) {
+                                setState(() {
+                                  _model.isLoading = true;
+                                });
+                                _model.apiResultEndTrip =
+                                    await StrackerApisGroup.endTripApiCall.call(
+                                        authorization:
+                                            FFAppState().TokenModelState.token);
+                                if ((_model.apiResultEndTrip?.succeeded ??
+                                    true)) {
                                   setState(() {
-                                    _model.isLoading = true;
+                                    _model.isLoading = false;
+                                    FFAppState().isLiveLocationStarted = false;
                                   });
-                                  _model.apiResultEndTrip =
-                                      await StrackerApisGroup.endTripApiCall
-                                          .call(
-                                              authorization: FFAppState()
-                                                  .TokenModelState
-                                                  .token);
-                                  if ((_model.apiResultEndTrip?.succeeded ??
-                                      true)) {
-                                    setState(() {
-                                      _model.isLoading = false;
-                                      FFAppState().isLiveLocationStarted =
-                                          false;
-                                    });
-                                    setState(() {
-                                      FFAppState().fullParentStateList.clear();
-                                      markers.clear();
-                                    });
-                                    positionStream.pause();
-                                    positionStream.cancel();
-                                    addPointAsMarker(
-                                        'assets/images/bus_5.png',
-                                        position?.latitude ?? 0.0,
-                                        position?.longitude ?? 0.0,
-                                        "assets/images/bus_5.png",
-                                        FFAppState().UserModelState.name,
-                                        100);
-                                  } else {
-                                    setState(() {
-                                      _model.isLoading = false;
-                                    });
-                                    await showDialog(
-                                      context: context,
-                                      builder: (alertDialogContext) {
-                                        return AlertDialog(
-                                          title: Text(
-                                              FFLocalizations.of(context)
-                                                  .getVariableText(
-                                            enText: 'Error',
-                                            arText: 'خطا',
-                                          )),
-                                          content: Text(getJsonField(
-                                            (_model.apiResultqus?.jsonBody ??
-                                                ''),
-                                            r'''$.message''',
-                                          ).toString()),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(
-                                                  alertDialogContext),
-                                              child: Text(
-                                                  FFLocalizations.of(context)
-                                                      .getVariableText(
-                                                enText: 'Ok',
-                                                arText: 'حسنا',
-                                              )),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  }
+                                  setState(() {
+                                    FFAppState().fullParentStateList.clear();
+                                    markers.clear();
+                                  });
+                                  positionStream.pause();
+                                  positionStream.cancel();
+                                  addPointAsMarker(
+                                      'assets/images/bus_5.png',
+                                      position?.latitude ?? 0.0,
+                                      position?.longitude ?? 0.0,
+                                      "assets/images/bus_5.png",
+                                      FFAppState().UserModelState.name,
+                                      100);
+                                  setState(() {
+                                    _model.polylines?.clear();
+                                  });
                                 } else {
                                   setState(() {
-                                    _model.isLoading = true;
+                                    _model.isLoading = false;
                                   });
-                                  _determinePosition().then((value) async {
-                                    setState(() {
-                                      _model.googleMapsCenter =
-                                          LatLng(value.latitude, value.longitude);
-                                    });
+                                  await showDialog(
+                                    context: context,
+                                    builder: (alertDialogContext) {
+                                      return AlertDialog(
+                                        title: Text(FFLocalizations.of(context)
+                                            .getVariableText(
+                                          enText: 'Error',
+                                          arText: 'خطا',
+                                        )),
+                                        content: Text(getJsonField(
+                                          (_model.apiResultqus?.jsonBody ?? ''),
+                                          r'''$.message''',
+                                        ).toString()),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                alertDialogContext),
+                                            child: Text(
+                                                FFLocalizations.of(context)
+                                                    .getVariableText(
+                                              enText: 'Ok',
+                                              arText: 'حسنا',
+                                            )),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              } else {
+                                setState(() {
+                                  _model.isLoading = true;
+                                });
+                                _determinePosition().then((value) async {
+                                  setState(() {
+                                    _model.googleMapsCenter =
+                                        latsdsd.LatLng(value.latitude, value.longitude);
+                                  });
                                   setState(() {
                                     _model.isLoading = false;
                                   });
@@ -492,13 +504,12 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                   ).then((value) => setState(() {
                                         positionStream.resume();
                                       }));
-                                  }).catchError((err) {
-                                    setState(() {
-                                      _model.isLoading = false;
-                                    });
+                                }).catchError((err) {
+                                  setState(() {
+                                    _model.isLoading = false;
                                   });
-                                }
-
+                                });
+                              }
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -625,12 +636,42 @@ class _MapPageWidgetState extends State<MapPageWidget> {
           (_model.apiResultqus?.jsonBody ?? ''),
           r'''$''',
           true,
-        )!.toList().map<ParentModelStruct?>(ParentModelStruct.maybeFromMap)
+        )!
+                .toList()
+                .map<ParentModelStruct?>(ParentModelStruct.maybeFromMap)
                 .toList() as Iterable<ParentModelStruct?>)
             .withoutNulls
             .toList()
             .cast<ParentModelStruct>();
       });
+
+
+      _model.directions = await gmd.getDirections(
+        _model.googleMapsCenter?.latitude ?? 0.0,
+        _model.googleMapsCenter?.longitude ?? 0.0,
+        double.tryParse(FFAppState().fullParentStateList.last.lat) ?? 0.0,
+        double.tryParse(FFAppState().fullParentStateList.last.lng) ?? 0.0,
+        language: "ar",
+      ).catchError((onError){
+        print('object');
+      });
+      _model.route = _model.directions?.shortestRoute;
+      _model.points = PolylinePoints()
+          .decodePolyline(_model.route?.overviewPolyline.points ?? '')
+          .map((point) => latsdsd.LatLng(point.latitude, point.longitude))
+          .toList();
+      setState(() {
+        _model.polylines?.clear();
+        _model.polylines = [
+          Polyline(
+            width: 4,
+            polylineId: PolylineId("sjadkjasd"),
+            color: Colors.green,
+            points:  _model.points ??  [],
+          ),
+        ];
+      });
+
       FFAppState().fullParentStateList.forEach((element) {
         element.isShowOnMap = false;
       });
@@ -746,6 +787,32 @@ class _MapPageWidgetState extends State<MapPageWidget> {
         FFAppState().fullParentStateList.forEach((element) {
           element.isShowOnMap = false;
         });
+      });
+
+      _model.directions = await gmd.getDirections(
+        _model.googleMapsCenter?.latitude ?? 0.0,
+        _model.googleMapsCenter?.longitude ?? 0.0,
+        double.tryParse(FFAppState().fullParentStateList.last.lat) ?? 0.0,
+        double.tryParse(FFAppState().fullParentStateList.last.lng) ?? 0.0,
+        language: "ar",
+      ).catchError((onError){
+        print('object');
+      });
+      _model.route = _model.directions?.shortestRoute;
+      _model.points = PolylinePoints()
+          .decodePolyline(_model.route?.overviewPolyline.points ?? '')
+          .map((point) => latsdsd.LatLng(point.latitude, point.longitude))
+          .toList();
+      setState(() {
+        _model.polylines?.clear();
+        _model.polylines = [
+          Polyline(
+            width: 4,
+            polylineId: PolylineId("sjadkjasd"),
+            color: Colors.green,
+            points:  _model.points ??  [],
+          ),
+        ];
       });
       if (FFAppState().fullParentStateList.isEmpty) {
         await showDialog(

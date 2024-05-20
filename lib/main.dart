@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_maps_directions/google_maps_directions.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
@@ -73,7 +75,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await initFirebase();
+  GoogleMapsDirections.init(googleAPIKey: 'AIzaSyBSfjhQiyvA1-ydSTZjnTZg5bB4TcraAkI');
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   initPushNotifications();
   try {
@@ -166,7 +170,7 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: false,
       ),
       darkTheme: ThemeData(
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
         useMaterial3: false,
       ),
       themeMode: _themeMode,

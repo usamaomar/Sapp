@@ -1,10 +1,10 @@
+import 'package:flutter/scheduler.dart';
+import 'package:google_static_maps_controller/google_static_maps_controller.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_static_map.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/pages/map_selection_location/map_selection_location_widget.dart';
-import 'package:mapbox_search/mapbox_search.dart' as mapbox;
 import 'package:flutter/material.dart';
 import 'my_profile_page_model.dart';
 export 'my_profile_page_model.dart';
@@ -18,12 +18,13 @@ class MyProfilePageWidget extends StatefulWidget {
 
 class _MyProfilePageWidgetState extends State<MyProfilePageWidget> {
   late MyProfilePageModel _model;
-
+  List<Marker>? markers;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
+    markers = [];
     _model = createModel(context, () => MyProfilePageModel());
 
     _model.textController1 ??= TextEditingController();
@@ -31,6 +32,24 @@ class _MyProfilePageWidgetState extends State<MyProfilePageWidget> {
 
     _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode2 ??= FocusNode();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      setState(() {
+        _model.textController1.text = FFAppState().UserModelState.name;
+        _model.updatedLat =
+            double.tryParse(FFAppState().UserModelState.lat) ?? 0.0;
+        _model.updatedLong =
+            double.tryParse(FFAppState().UserModelState.lng) ?? 0.0;
+        markers?.add(Marker(
+          locations: [
+            GeocodedLocation.latLng(
+                _model.updatedLat ?? 0.0, _model.updatedLong ?? 0.0),
+          ],
+          color: Colors.amber,
+          label: "X",
+        ));
+      });
+    });
   }
 
   @override
@@ -89,11 +108,12 @@ class _MyProfilePageWidgetState extends State<MyProfilePageWidget> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(8.0, 20.0, 8.0, 20.0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                      8.0, 20.0, 8.0, 20.0),
                   child: TextFormField(
                     controller: _model.textController1,
                     focusNode: _model.textFieldFocusNode1,
-                    autofocus: true,
+                    autofocus: false,
                     obscureText: false,
                     decoration: InputDecoration(
                       labelText: FFLocalizations.of(context).getText(
@@ -147,11 +167,12 @@ class _MyProfilePageWidgetState extends State<MyProfilePageWidget> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
+                  padding:
+                      const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
                   child: TextFormField(
                     controller: _model.textController2,
                     focusNode: _model.textFieldFocusNode2,
-                    autofocus: true,
+                    autofocus: false,
                     obscureText: false,
                     decoration: InputDecoration(
                       labelText: FFLocalizations.of(context).getText(
@@ -205,40 +226,26 @@ class _MyProfilePageWidgetState extends State<MyProfilePageWidget> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 0.0),
+                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 0.0),
                   child: Stack(
                     children: [
-                      const Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
+                      Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              14.0, 20.0, 14.0, 0.0),
+                          child: Row(mainAxisSize: MainAxisSize.max, children: [
                             Expanded(
-                              child: FlutterFlowStaticMap(
-                                location: LatLng(9.341465, -79.891704),
-                                apiKey:
-                                    'AIzaSyCs7zjEbOg76QfJbB6pLSuOh5OvWSgbG80',
-                                style: mapbox.MapBoxStyle.Light,
-                                width: 350.0,
-                                height: 200.0,
-                                fit: BoxFit.cover,
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(0.0),
-                                  bottomRight: Radius.circular(0.0),
-                                  topLeft: Radius.circular(0.0),
-                                  topRight: Radius.circular(0.0),
-                                ),
-                                zoom: 12,
-                                tilt: 0,
-                                rotation: 0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                                child: StaticMap(
+                              googleApiKey:
+                                  "AIzaSyDp1fqFcVIug08y5rVKpSpJylJo3_SanzY",
+                              width: 350.0,
+                              height: 200.0,
+                              scaleToDevicePixelRatio: false,
+                              zoom: 14,
+                              markers: markers,
+                            ))
+                          ])),
                       Align(
-                        alignment: const AlignmentDirectional(1.0, 0.0),
+                        alignment: const AlignmentDirectional(1, 0.0),
                         child: Builder(
                           builder: (context) => Padding(
                             padding: const EdgeInsetsDirectional.fromSTEB(
@@ -256,7 +263,8 @@ class _MyProfilePageWidgetState extends State<MyProfilePageWidget> {
                                       elevation: 0,
                                       insetPadding: EdgeInsets.zero,
                                       backgroundColor: Colors.transparent,
-                                      alignment: const AlignmentDirectional(0.0, 0.0)
+                                      alignment: const AlignmentDirectional(
+                                              0.0, 0.0)
                                           .resolve(Directionality.of(context)),
                                       child: GestureDetector(
                                         onTap: () => _model
@@ -265,11 +273,29 @@ class _MyProfilePageWidgetState extends State<MyProfilePageWidget> {
                                                 .requestFocus(
                                                     _model.unfocusNode)
                                             : FocusScope.of(context).unfocus(),
-                                        child: const MapSelectionLocationWidget(),
+                                        child:
+                                            const MapSelectionLocationWidget(),
                                       ),
                                     );
                                   },
-                                ).then((value) => setState(() {}));
+                                ).then((value) {
+                                  if (value != null) {
+                                    setState(() {
+                                      _model.updatedLat = value[0];
+                                      _model.updatedLong = value[1];
+                                      markers?.clear();
+                                      markers?.add(Marker(
+                                        locations: [
+                                          GeocodedLocation.latLng(
+                                              value[0], value[1]),
+                                        ],
+                                        color: Colors.amber,
+                                        size: MarkerSize.mid,
+                                        label: "X",
+                                      ));
+                                    });
+                                  }
+                                });
                               },
                               child: Icon(
                                 Icons.edit_square,
@@ -286,8 +312,8 @@ class _MyProfilePageWidgetState extends State<MyProfilePageWidget> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding:
-                        const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 40.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        0.0, 0.0, 0.0, 40.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.end,

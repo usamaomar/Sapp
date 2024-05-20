@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -110,10 +112,95 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
                       hoverColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       onTap: () async {
+                        if(_model.textController.text.isEmpty){
+                          await showDialog(
+                            context: context,
+                            builder: (alertDialogContext) {
+                              return AlertDialog(
+                                title: Text(FFLocalizations.of(context).getVariableText(
+                                  enText: 'Alert',
+                                  arText: 'تحذير',
+                                )),
+                                content: Text(FFLocalizations.of(context).getVariableText(
+                                  enText: 'Name Must Not Be Empty',
+                                  arText: 'يجب ان لا يكون الاسم فارغا',
+                                )),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(alertDialogContext),
+                                    child: Text(FFLocalizations.of(context).getVariableText(
+                                      enText: 'Ok',
+                                      arText: 'حسنا',
+                                    )),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          return;
+                        }
+
+                        if(_model.uploadedLocalFile.name == null){
+                          await showDialog(
+                            context: context,
+                            builder: (alertDialogContext) {
+                              return AlertDialog(
+                                title: Text(FFLocalizations.of(context).getVariableText(
+                                  enText: 'Alert',
+                                  arText: 'تحذير',
+                                )),
+                                content: Text(FFLocalizations.of(context).getVariableText(
+                                  enText: 'Image Must Not Be Empty',
+                                  arText: 'يجب ان لا تكون الصورة فارغه',
+                                )),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(alertDialogContext),
+                                    child: Text(FFLocalizations.of(context).getVariableText(
+                                      enText: 'Ok',
+                                      arText: 'حسنا',
+                                    )),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          return;
+                        }
+
+
+                        if(_model.selectedBranch == null){
+                          await showDialog(
+                            context: context,
+                            builder: (alertDialogContext) {
+                              return AlertDialog(
+                                title: Text(FFLocalizations.of(context).getVariableText(
+                                  enText: 'Alert',
+                                  arText: 'تحذير',
+                                )),
+                                content: Text(FFLocalizations.of(context).getVariableText(
+                                  enText: 'Branch Must Not Be Empty',
+                                  arText: 'يجب ان تختار الفرع',
+                                )),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(alertDialogContext),
+                                    child: Text(FFLocalizations.of(context).getVariableText(
+                                      enText: 'Ok',
+                                      arText: 'حسنا',
+                                    )),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          return;
+                        }
                         _model.apiResult96w =
                             await StrackerApisGroup.newStudentApiCall.call(
                           studentName: _model.textController.text,
-                          branchId: 0,
+                          studentImage: _model.uploadedLocalFile,
+                          branchId: _model.selectedBranch?.id,
                           authorization: FFAppState().TokenModelState.token,
                         );
                         if ((_model.apiResult96w?.succeeded ?? true)) {
@@ -132,11 +219,11 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
                               ),
                               duration: const Duration(milliseconds: 4000),
                               backgroundColor:
-                                  FlutterFlowTheme.of(context).white,
+                                  Colors.lightBlue,
                             ),
                           );
                         }
-
+                        Navigator.pop(context,true);
                         setState(() {});
                       },
                       child: Icon(
@@ -178,83 +265,90 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
                   ],
                 ),
               ),
-              Stack(
-                children: [
-                  Container(
-                    width: 120.0,
-                    height: 120.0,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: Image.network(
-                      'https://picsum.photos/seed/310/600',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Container(
-                    width: 120.0,
-                    height: 120.0,
-                    decoration: const BoxDecoration(
-                      color: Colors.black45,
-                      shape: BoxShape.circle,
-                    ),
-                    child: InkWell(
-                      splashColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      onTap: () async {
-                        final selectedMedia =
-                            await selectMediaWithSourceBottomSheet(
-                          context: context,
-                          allowPhoto: true,
-                        );
-                        if (selectedMedia != null &&
-                            selectedMedia.every((m) =>
-                                validateFileFormat(m.storagePath, context))) {
-                          setState(() => _model.isDataUploading = true);
-                          var selectedUploadedFiles = <FFUploadedFile>[];
-
-                          try {
-                            selectedUploadedFiles = selectedMedia
-                                .map((m) => FFUploadedFile(
-                                      name: m.storagePath.split('/').last,
-                                      bytes: m.bytes,
-                                      height: m.dimensions?.height,
-                                      width: m.dimensions?.width,
-                                      blurHash: m.blurHash,
-                                    ))
-                                .toList();
-                          } finally {
-                            _model.isDataUploading = false;
-                          }
-                          if (selectedUploadedFiles.length ==
-                              selectedMedia.length) {
-                            setState(() {
-                              _model.uploadedLocalFile =
-                                  selectedUploadedFiles.first;
-                            });
-                          } else {
-                            setState(() {});
-                            return;
-                          }
-                        }
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.upload_file_sharp,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 24.0,
+              InkWell(
+                onTap: () async {
+                  final selectedMedia =
+                  await selectMediaWithSourceBottomSheet(
+                    context: context,
+                    allowPhoto: true,
+                  );
+                  if (selectedMedia != null &&
+                      selectedMedia.every((m) =>
+                          validateFileFormat(m.storagePath, context))) {
+                    setState(() => _model.isDataUploading = true);
+                    var selectedUploadedFiles = <FFUploadedFile>[];
+                    try {
+                      selectedUploadedFiles = selectedMedia
+                          .map((m) => FFUploadedFile(
+                        name: m.storagePath.split('/').last,
+                        bytes: m.bytes,
+                        height: m.dimensions?.height,
+                        width: m.dimensions?.width,
+                        blurHash: m.blurHash,
+                      ))
+                          .toList();
+                    } finally {
+                      _model.isDataUploading = false;
+                    }
+                    if (selectedUploadedFiles.length ==
+                        selectedMedia.length) {
+                      setState(() {
+                        _model.uploadedLocalFile =
+                            selectedUploadedFiles.first;
+                      });
+                    } else {
+                      setState(() {});
+                      return;
+                    }
+                  }
+                },
+                child: Stack(
+                  children: [
+                    _model.uploadedLocalFile.name!=null ?  Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 120.0,
+                          height: 120.0,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                          child: Image.memory(
+                            _model.uploadedLocalFile.bytes ?? Uint8List.fromList([]),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ],
+                    ) : Container(),
+                    _model.uploadedLocalFile.name == null ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 120.0,
+                          height: 120.0,
+                          decoration: const BoxDecoration(
+                            color: Colors.black26,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.upload_file_sharp,
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                                size: 44.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ) : Container(),
+                  ],
+                ),
               ),
               Padding(
                 padding:
@@ -423,6 +517,7 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
                                   _model.listOfLocals.map((e) {
                                     if (e.id == localListItem.id) {
                                       localListItem.isSelected = true;
+                                      _model.selectedBranch = localListItem;
                                     }
                                   }).toList();
                                 });

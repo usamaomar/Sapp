@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:s_tracker/backend/schema/structs/index.dart';
 
 import '../../backend/api_requests/api_calls.dart';
 import '../../backend/schema/structs/parent_model_struct.dart';
@@ -37,7 +38,6 @@ class _MapPageWidgetState extends State<MapParentPageWidget> {
   LatLng? currentLocation;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   late LocationSettings locationSettings;
-  late StreamSubscription<Position> positionStream;
   late GoogleMapController mapController;
   late Set<Marker> markers;
   Position? position;
@@ -56,8 +56,6 @@ class _MapPageWidgetState extends State<MapParentPageWidget> {
   @override
   void dispose() {
     _model.dispose();
-    positionStream.pause();
-    positionStream.cancel();
     super.dispose();
   }
 
@@ -199,6 +197,8 @@ class _MapPageWidgetState extends State<MapParentPageWidget> {
                             Expanded(
                               child: FFButtonWidget(
                                 onPressed: () async {
+                                  FFAppState().UserModelState = UserModelStruct();
+                                  FFAppState().TokenModelState = TokenModelStruct();
                                   context.goNamed('LogInScreen');
                                 },
                                 text: FFLocalizations.of(context).getText(

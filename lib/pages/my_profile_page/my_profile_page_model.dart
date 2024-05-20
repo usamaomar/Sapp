@@ -14,6 +14,8 @@ class MyProfilePageModel extends FlutterFlowModel<MyProfilePageWidget> {
   FocusNode? textFieldFocusNode2;
   TextEditingController? textController2;
   String? Function(BuildContext, String?)? textController2Validator;
+  double? updatedLat;
+  double? updatedLong;
 
   @override
   void initState(BuildContext context) {}

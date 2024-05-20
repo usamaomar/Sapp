@@ -22,6 +22,7 @@ class AddStudentsPageModel extends FlutterFlowModel<AddStudentsPageWidget> {
   ApiCallResponse? apiResult96w;
   ApiCallResponse? apiGetBranches;
   List<BranchStruct> listOfLocals = [];
+  BranchStruct? selectedBranch ;
 
   @override
   void initState(BuildContext context) {}

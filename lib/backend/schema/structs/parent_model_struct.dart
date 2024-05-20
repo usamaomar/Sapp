@@ -205,7 +205,7 @@ class ParentModelStruct extends BaseStruct {
         emailVerifiedAt: data['email_verified_at'] as String?,
         twoFactorConfirmedAt: data['two_factor_confirmed_at'] as String?,
         nationality: data['nationality'] as String?,
-        idNumber: castToType<int>(data['id_number']),
+        idNumber: castToType<int>(int.tryParse(data['id_number'])),
         address: data['address'] as String?,
         mobileNumber: data['mobile_number'] as String?,
         mobileNumberCountry: data['mobile_number_country'] as String?,

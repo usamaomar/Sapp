@@ -1,9 +1,12 @@
+import 'package:google_maps_directions/google_maps_directions.dart';
+
 import '../../backend/api_requests/api_manager.dart';
 import '../../backend/schema/structs/student_model_struct.dart';
 import '/flutter_flow/flutter_flow_google_map.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'map_page_widget.dart' show MapPageWidget;
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter_platform_interface/src/types/location.dart' as latsdsd;
 
 class MapPageModel extends FlutterFlowModel<MapPageWidget> {
   ///  Local state fields for this page.
@@ -30,8 +33,12 @@ class MapPageModel extends FlutterFlowModel<MapPageWidget> {
 
   final unfocusNode = FocusNode();
   // State field(s) for GoogleMap widget.
-  LatLng? googleMapsCenter;
+  latsdsd.LatLng? googleMapsCenter;
   final googleMapsController = Completer<GoogleMapController>();
+  Directions? directions;
+  DirectionRoute? route;
+  List<latsdsd.LatLng>? points;
+  List<Polyline>? polylines;
 
   @override
   void initState(BuildContext context) {}
