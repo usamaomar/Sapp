@@ -4,11 +4,15 @@ import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import 'dart:math';
+import '/backend/schema/structs/index.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'log_in_screen_model.dart';
 export 'log_in_screen_model.dart';
 
@@ -61,15 +65,15 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
             curve: Curves.easeInOut,
             delay: 0.0.ms,
             duration: 300.0.ms,
-            begin: const Offset(0.0, 60.0),
-            end: const Offset(0.0, 0.0),
+            begin: Offset(0.0, 60.0),
+            end: Offset(0.0, 0.0),
           ),
           TiltEffect(
             curve: Curves.easeInOut,
             delay: 0.0.ms,
             duration: 300.0.ms,
-            begin: const Offset(-0.349, 0),
-            end: const Offset(0, 0),
+            begin: Offset(-0.349, 0),
+            end: Offset(0, 0),
           ),
         ],
       ),
@@ -106,7 +110,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                   letterSpacing: 0.0,
                 ),
           ),
-          actions: const [],
+          actions: [],
           centerTitle: false,
           elevation: 2.0,
         ),
@@ -116,7 +120,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
             decoration: BoxDecoration(
               color: FlutterFlowTheme.of(context).secondaryBackground,
             ),
-            alignment: const AlignmentDirectional(0.0, -1.0),
+            alignment: AlignmentDirectional(0.0, -1.0),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.max,
@@ -124,31 +128,31 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                 children: [
                   Padding(
                     padding:
-                        const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                        EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
                     child: Container(
-                      constraints: const BoxConstraints(
+                      constraints: BoxConstraints(
                         maxWidth: 602.0,
                       ),
                       decoration: BoxDecoration(
                         color: FlutterFlowTheme.of(context).secondaryBackground,
                       ),
                       child: Align(
-                        alignment: const AlignmentDirectional(0.0, 0.0),
+                        alignment: AlignmentDirectional(0.0, 0.0),
                         child: Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(
+                          padding: EdgeInsetsDirectional.fromSTEB(
                               12.0, 0.0, 12.0, 12.0),
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
+                              Container(
                                 width: double.infinity,
                                 child: TextFormField(
                                   controller: _model.emailAddressTextController,
                                   focusNode: _model.emailAddressFocusNode,
                                   onChanged: (_) => EasyDebounce.debounce(
                                     '_model.emailAddressTextController',
-                                    const Duration(milliseconds: 2000),
+                                    Duration(milliseconds: 2000),
                                     () async {
                                       setState(() {
                                         _model.emailNotValid = false;
@@ -156,7 +160,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                     },
                                   ),
                                   autofocus: false,
-                                  autofillHints: const [
+                                  autofillHints: [
                                     AutofillHints.telephoneNumber
                                   ],
                                   textInputAction: TextInputAction.next,
@@ -211,7 +215,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                     filled: true,
                                     fillColor: FlutterFlowTheme.of(context)
                                         .secondaryBackground,
-                                    contentPadding: const EdgeInsets.all(24.0),
+                                    contentPadding: EdgeInsets.all(24.0),
                                   ),
                                   style: FlutterFlowTheme.of(context)
                                       .bodyMedium
@@ -230,7 +234,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                padding: EdgeInsetsDirectional.fromSTEB(
                                     15.0, 5.0, 0.0, 15.0),
                                 child: Text(
                                   FFLocalizations.of(context).getText(
@@ -242,15 +246,15 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                         fontFamily: 'Readex Pro',
                                         color: _model.emailNotValid == true
                                             ? FlutterFlowTheme.of(context).error
-                                            : const Color(0x00FFFFFF),
+                                            : Color(0x00FFFFFF),
                                         letterSpacing: 0.0,
                                       ),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 16.0, 0.0, 0.0),
-                                child: SizedBox(
+                                child: Container(
                                   width: double.infinity,
                                   child: TextFormField(
                                     controller: _model.passwordTextController,
@@ -261,7 +265,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                       });
                                     },
                                     autofocus: false,
-                                    autofillHints: const [AutofillHints.password],
+                                    autofillHints: [AutofillHints.password],
                                     obscureText: !_model.passwordVisibility,
                                     decoration: InputDecoration(
                                       labelText:
@@ -319,7 +323,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                       filled: true,
                                       fillColor: FlutterFlowTheme.of(context)
                                           .secondaryBackground,
-                                      contentPadding: const EdgeInsets.all(24.0),
+                                      contentPadding: EdgeInsets.all(24.0),
                                       suffixIcon: InkWell(
                                         onTap: () => setState(
                                           () => _model.passwordVisibility =
@@ -352,7 +356,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                padding: EdgeInsetsDirectional.fromSTEB(
                                     15.0, 5.0, 0.0, 15.0),
                                 child: Text(
                                   FFLocalizations.of(context).getText(
@@ -364,20 +368,23 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                         fontFamily: 'Readex Pro',
                                         color: _model.passwordNotValid == true
                                             ? FlutterFlowTheme.of(context).error
-                                            : const Color(0x00FFFFFF),
+                                            : Color(0x00FFFFFF),
                                         letterSpacing: 0.0,
                                       ),
                                 ),
                               ),
                               Align(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
+                                alignment: AlignmentDirectional(0.0, 0.0),
                                 child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
                                       0.0, 16.0, 0.0, 16.0),
                                   child: FFButtonWidget(
                                     onPressed: () async {
-                                      var shouldSetState = false;
+                                      var _shouldSetState = false;
                                       if (_model.emailAddressTextController
+                                                  .text !=
+                                              null &&
+                                          _model.emailAddressTextController
                                                   .text !=
                                               '') {
                                         setState(() {
@@ -385,11 +392,14 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                         });
                                         if (_model.passwordTextController
                                                     .text ==
+                                                null ||
+                                            _model.passwordTextController
+                                                    .text ==
                                                 '') {
                                           setState(() {
                                             _model.passwordNotValid = true;
                                           });
-                                          if (shouldSetState) setState(() {});
+                                          if (_shouldSetState) setState(() {});
                                           return;
                                         } else {
                                           setState(() {
@@ -407,7 +417,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                           password: _model
                                               .passwordTextController.text,
                                         );
-                                        shouldSetState = true;
+                                        _shouldSetState = true;
                                         if ((_model.apiResultqus?.succeeded ??
                                             true)) {
                                           setState(() {
@@ -431,7 +441,7 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
 
                                           context.pushNamed('MapPage');
 
-                                          if (shouldSetState) setState(() {});
+                                          if (_shouldSetState) setState(() {});
                                           return;
                                         } else {
                                           await showDialog(
@@ -486,18 +496,18 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                                     .toList()
                                                     .cast<ParentModelStruct>();
                                           });
-                                          if (shouldSetState) setState(() {});
+                                          if (_shouldSetState) setState(() {});
                                           return;
                                         }
                                       } else {
                                         setState(() {
                                           _model.emailNotValid = true;
                                         });
-                                        if (shouldSetState) setState(() {});
+                                        if (_shouldSetState) setState(() {});
                                         return;
                                       }
 
-                                      if (shouldSetState) setState(() {});
+                                      if (_shouldSetState) setState(() {});
                                     },
                                     text: FFLocalizations.of(context).getText(
                                       '2hh5c3n9' /* Sign In */,
@@ -505,10 +515,10 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                     options: FFButtonOptions(
                                       width: 230.0,
                                       height: 52.0,
-                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
                                           0.0, 0.0, 0.0, 0.0),
                                       iconPadding:
-                                          const EdgeInsetsDirectional.fromSTEB(
+                                          EdgeInsetsDirectional.fromSTEB(
                                               0.0, 0.0, 0.0, 0.0),
                                       color:
                                           FlutterFlowTheme.of(context).primary,

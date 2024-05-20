@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '/backend/schema/structs/index.dart';
+import 'backend/api_requests/api_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 
@@ -73,9 +74,9 @@ class FFAppState extends ChangeNotifier {
 
   UserModelStruct _UserModelState = UserModelStruct();
   UserModelStruct get UserModelState => _UserModelState;
-  set UserModelState(UserModelStruct value) {
-    _UserModelState = value;
-    prefs.setString('ff_UserModelState', value.serialize());
+  set UserModelState(UserModelStruct _value) {
+    _UserModelState = _value;
+    prefs.setString('ff_UserModelState', _value.serialize());
   }
 
   void updateUserModelStateStruct(Function(UserModelStruct) updateFn) {
@@ -85,9 +86,9 @@ class FFAppState extends ChangeNotifier {
 
   TokenModelStruct _TokenModelState = TokenModelStruct();
   TokenModelStruct get TokenModelState => _TokenModelState;
-  set TokenModelState(TokenModelStruct value) {
-    _TokenModelState = value;
-    prefs.setString('ff_TokenModelState', value.serialize());
+  set TokenModelState(TokenModelStruct _value) {
+    _TokenModelState = _value;
+    prefs.setString('ff_TokenModelState', _value.serialize());
   }
 
   void updateTokenModelStateStruct(Function(TokenModelStruct) updateFn) {
@@ -97,58 +98,58 @@ class FFAppState extends ChangeNotifier {
 
   List<ParentModelStruct> _fullParentStateList = [];
   List<ParentModelStruct> get fullParentStateList => _fullParentStateList;
-  set fullParentStateList(List<ParentModelStruct> value) {
-    _fullParentStateList = value;
+  set fullParentStateList(List<ParentModelStruct> _value) {
+    _fullParentStateList = _value;
     prefs.setStringList(
-        'ff_fullParentStateList', value.map((x) => x.serialize()).toList());
+        'ff_fullParentStateList', _value.map((x) => x.serialize()).toList());
   }
 
-  void addToFullParentStateList(ParentModelStruct value) {
-    _fullParentStateList.add(value);
+  void addToFullParentStateList(ParentModelStruct _value) {
+    _fullParentStateList.add(_value);
     prefs.setStringList('ff_fullParentStateList',
         _fullParentStateList.map((x) => x.serialize()).toList());
   }
 
-  void removeFromFullParentStateList(ParentModelStruct value) {
-    _fullParentStateList.remove(value);
+  void removeFromFullParentStateList(ParentModelStruct _value) {
+    _fullParentStateList.remove(_value);
     prefs.setStringList('ff_fullParentStateList',
         _fullParentStateList.map((x) => x.serialize()).toList());
   }
 
-  void removeAtIndexFromFullParentStateList(int index) {
-    _fullParentStateList.removeAt(index);
+  void removeAtIndexFromFullParentStateList(int _index) {
+    _fullParentStateList.removeAt(_index);
     prefs.setStringList('ff_fullParentStateList',
         _fullParentStateList.map((x) => x.serialize()).toList());
   }
 
   void updateFullParentStateListAtIndex(
-    int index,
+    int _index,
     ParentModelStruct Function(ParentModelStruct) updateFn,
   ) {
-    _fullParentStateList[index] = updateFn(_fullParentStateList[index]);
+    _fullParentStateList[_index] = updateFn(_fullParentStateList[_index]);
     prefs.setStringList('ff_fullParentStateList',
         _fullParentStateList.map((x) => x.serialize()).toList());
   }
 
   void insertAtIndexInFullParentStateList(
-      int index, ParentModelStruct value) {
-    _fullParentStateList.insert(index, value);
+      int _index, ParentModelStruct _value) {
+    _fullParentStateList.insert(_index, _value);
     prefs.setStringList('ff_fullParentStateList',
         _fullParentStateList.map((x) => x.serialize()).toList());
   }
 
   bool _isLiveLocationStarted = false;
   bool get isLiveLocationStarted => _isLiveLocationStarted;
-  set isLiveLocationStarted(bool value) {
-    _isLiveLocationStarted = value;
-    prefs.setBool('ff_isLiveLocationStarted', value);
+  set isLiveLocationStarted(bool _value) {
+    _isLiveLocationStarted = _value;
+    prefs.setBool('ff_isLiveLocationStarted', _value);
   }
 
   bool _isGoStateIsSet = false;
   bool get isGoStateIsSet => _isGoStateIsSet;
-  set isGoStateIsSet(bool value) {
-    _isGoStateIsSet = value;
-    prefs.setBool('ff_isGoStateIsSet', value);
+  set isGoStateIsSet(bool _value) {
+    _isGoStateIsSet = _value;
+    prefs.setBool('ff_isGoStateIsSet', _value);
   }
 }
 

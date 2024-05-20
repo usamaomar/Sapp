@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:typed_data';
+import '../schema/structs/index.dart';
 
 import 'package:flutter/foundation.dart';
 
@@ -41,16 +43,16 @@ class LoginApiCall {
 
     final ffApiRequestBody = '''
 {
-  "mobile_number": "$mobileNumber",
-  "password": "$password"
+  "mobile_number": "${mobileNumber}",
+  "password": "${password}"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'LoginApi',
-      apiUrl: '$baseUrl/login',
+      apiUrl: '${baseUrl}/login',
       callType: ApiCallType.POST,
       headers: {
         'Accept': 'application/json',
-        'Authorization': 'Bearer $authorization',
+        'Authorization': 'Bearer ${authorization}',
       },
       params: {},
       body: ffApiRequestBody,
@@ -63,7 +65,7 @@ class LoginApiCall {
     );
   }
 
-  dynamic userbject(dynamic response) => getJsonField(
+  dynamic? userbject(dynamic response) => getJsonField(
         response,
         r'''$.user''',
       );
@@ -83,11 +85,11 @@ class GetStudentApiCall {
 
     return ApiManager.instance.makeApiCall(
       callName: 'getStudentApi',
-      apiUrl: '$baseUrl/getStudent',
+      apiUrl: '${baseUrl}/getStudent',
       callType: ApiCallType.GET,
       headers: {
         'Accept': 'application/json',
-        'Authorization': 'Bearer $authorization',
+        'Authorization': 'Bearer ${authorization}',
       },
       params: {},
       returnBody: true,
@@ -109,11 +111,11 @@ class EndTripApiCall {
 
     return ApiManager.instance.makeApiCall(
       callName: 'endTripApi',
-      apiUrl: '$baseUrl/tripEnd',
+      apiUrl: '${baseUrl}/tripEnd',
       callType: ApiCallType.PUT,
       headers: {
         'Accept': 'application/json',
-        'Authorization': 'Bearer $authorization',
+        'Authorization': 'Bearer ${authorization}',
       },
       params: {},
       bodyType: BodyType.JSON,
@@ -138,16 +140,16 @@ class UpdateStudentStatusApiCall {
 
     final ffApiRequestBody = '''
 {
-  "student_id": "$studentId",
-  "status": "$status"
+  "student_id": "${studentId}",
+  "status": "${status}"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'updateStudentStatusApi',
-      apiUrl: '$baseUrl/updateStudentStatus',
+      apiUrl: '${baseUrl}/updateStudentStatus',
       callType: ApiCallType.POST,
       headers: {
         'Accept': 'application/json',
-        'Authorization': 'Bearer $authorization',
+        'Authorization': 'Bearer ${authorization}',
       },
       params: {},
       body: ffApiRequestBody,
@@ -173,16 +175,16 @@ class UpdateLiveLocationCall {
 
     final ffApiRequestBody = '''
 {
-  "lat": "$lat",
-  "lng": "$lng"
+  "lat": "${lat}",
+  "lng": "${lng}"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'updateLiveLocation',
-      apiUrl: '$baseUrl/updateLiveLocation',
+      apiUrl: '${baseUrl}/updateLiveLocation',
       callType: ApiCallType.POST,
       headers: {
         'Accept': 'application/json',
-        'Authorization': 'Bearer $authorization',
+        'Authorization': 'Bearer ${authorization}',
       },
       params: {},
       body: ffApiRequestBody,

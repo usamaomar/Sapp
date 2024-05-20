@@ -1,9 +1,11 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_timer.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'splash_screen_model.dart';
 export 'splash_screen_model.dart';
@@ -54,7 +56,7 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget> {
         body: SafeArea(
           top: true,
           child: Align(
-            alignment: const AlignmentDirectional(0.0, 0.0),
+            alignment: AlignmentDirectional(0.0, 0.0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -79,14 +81,15 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget> {
                         milliSecond: false,
                       ),
                       controller: _model.timerController,
-                      updateStateInterval: const Duration(milliseconds: 1000),
+                      updateStateInterval: Duration(milliseconds: 1000),
                       onChanged: (value, displayTime, shouldUpdate) {
                         _model.timerMilliseconds = value;
                         _model.timerValue = displayTime;
                         if (shouldUpdate) setState(() {});
                       },
                       onEnded: () async {
-                        if (FFAppState().TokenModelState.token != '') {
+                        if (FFAppState().TokenModelState.token != null &&
+                            FFAppState().TokenModelState.token != '') {
                           context.goNamed('MapPage');
                         } else {
                           context.goNamed('LogInScreen');
@@ -96,7 +99,7 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget> {
                       style:
                           FlutterFlowTheme.of(context).headlineSmall.override(
                                 fontFamily: 'Outfit',
-                                color: const Color(0x0014181B),
+                                color: Color(0x0014181B),
                                 letterSpacing: 0.0,
                               ),
                     ),
