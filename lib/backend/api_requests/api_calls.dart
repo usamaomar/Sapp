@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 import '/flutter_flow/flutter_flow_util.dart';
 import 'api_manager.dart';
 
@@ -10,7 +12,10 @@ const _kPrivateApiFunctionName = 'ffPrivateApiCall';
 /// Start StrackerApis Group Code
 
 class StrackerApisGroup {
-  static String baseUrl = 'https://sts.attendious.com/api';
+  static String getBaseUrl({
+    String? authorization = '',
+  }) =>
+      'https://sts.attendious.com/api';
   static Map<String, String> headers = {
     'Accept': 'application/json',
     'Authorization': 'Bearer [Authorization]',
@@ -30,6 +35,10 @@ class LoginApiCall {
     String? password = '',
     String? authorization = '',
   }) async {
+    final baseUrl = StrackerApisGroup.getBaseUrl(
+      authorization: authorization,
+    );
+
     final ffApiRequestBody = '''
 {
   "mobile_number": "$mobileNumber",
@@ -37,7 +46,7 @@ class LoginApiCall {
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'LoginApi',
-      apiUrl: '${StrackerApisGroup.baseUrl}/login',
+      apiUrl: '$baseUrl/login',
       callType: ApiCallType.POST,
       headers: {
         'Accept': 'application/json',
@@ -68,9 +77,13 @@ class GetStudentApiCall {
   Future<ApiCallResponse> call({
     String? authorization = '',String goBack = 'go'
   }) async {
+    final baseUrl = StrackerApisGroup.getBaseUrl(
+      authorization: authorization,
+    );
+
     return ApiManager.instance.makeApiCall(
       callName: 'getStudentApi',
-      apiUrl: '${StrackerApisGroup.baseUrl}/getStudent/$goBack',
+      apiUrl: '$baseUrl/getStudent/$goBack',
       callType: ApiCallType.GET,
       headers: {
         'Accept': 'application/json',
@@ -90,9 +103,13 @@ class EndTripApiCall {
   Future<ApiCallResponse> call({
     String? authorization = '',
   }) async {
+    final baseUrl = StrackerApisGroup.getBaseUrl(
+      authorization: authorization,
+    );
+
     return ApiManager.instance.makeApiCall(
       callName: 'endTripApi',
-      apiUrl: '${StrackerApisGroup.baseUrl}/tripEnd',
+      apiUrl: '$baseUrl/tripEnd',
       callType: ApiCallType.PUT,
       headers: {
         'Accept': 'application/json',
@@ -115,6 +132,10 @@ class UpdateStudentStatusApiCall {
     String? status = '',
     String? authorization = '',
   }) async {
+    final baseUrl = StrackerApisGroup.getBaseUrl(
+      authorization: authorization,
+    );
+
     final ffApiRequestBody = '''
 {
   "student_id": "$studentId",
@@ -122,7 +143,7 @@ class UpdateStudentStatusApiCall {
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'updateStudentStatusApi',
-      apiUrl: '${StrackerApisGroup.baseUrl}/updateStudentStatus',
+      apiUrl: '$baseUrl/updateStudentStatus',
       callType: ApiCallType.POST,
       headers: {
         'Accept': 'application/json',
@@ -146,6 +167,10 @@ class UpdateLiveLocationCall {
     String? lng = '',
     String? authorization = '',
   }) async {
+    final baseUrl = StrackerApisGroup.getBaseUrl(
+      authorization: authorization,
+    );
+
     final ffApiRequestBody = '''
 {
   "lat": "$lat",
@@ -153,7 +178,7 @@ class UpdateLiveLocationCall {
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'updateLiveLocation',
-      apiUrl: '${StrackerApisGroup.baseUrl}/updateLiveLocation',
+      apiUrl: '$baseUrl/updateLiveLocation',
       callType: ApiCallType.POST,
       headers: {
         'Accept': 'application/json',
@@ -194,6 +219,9 @@ String _serializeList(List? list) {
   try {
     return json.encode(list);
   } catch (_) {
+    if (kDebugMode) {
+      print("List serialization failed. Returning empty list.");
+    }
     return '[]';
   }
 }
@@ -203,6 +231,9 @@ String _serializeJson(dynamic jsonVar, [bool isList = false]) {
   try {
     return json.encode(jsonVar);
   } catch (_) {
+    if (kDebugMode) {
+      print("Json serialization failed. Returning empty json.");
+    }
     return isList ? '[]' : '{}';
   }
 }

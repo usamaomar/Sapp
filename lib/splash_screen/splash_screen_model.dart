@@ -9,6 +9,7 @@ class SplashScreenModel extends FlutterFlowModel<SplashScreenWidget> {
 
   final unfocusNode = FocusNode();
   // State field(s) for Timer widget.
+  final timerInitialTimeMs = 3000;
   int timerMilliseconds = 3000;
   String timerValue = StopWatchTimer.getDisplayTime(
     3000,
