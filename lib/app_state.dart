@@ -65,6 +65,9 @@ class FFAppState extends ChangeNotifier {
     // _safeInit(() {
     //   _isGoStateIsSet = prefs.getBool('ff_isGoStateIsSet') ?? _isGoStateIsSet;
     // });
+    _safeInit(() {
+      _slectedLanguge = prefs.getString('ff_slectedLanguge') ?? _slectedLanguge;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -162,6 +165,19 @@ class FFAppState extends ChangeNotifier {
   //   _isGoStateIsSet = value;
   //   prefs.setBool('ff_isGoStateIsSet', value);
   // }
+  bool _isGoStateIsSet = false;
+  bool get isGoStateIsSet => _isGoStateIsSet;
+  set isGoStateIsSet(bool value) {
+    _isGoStateIsSet = value;
+    prefs.setBool('ff_isGoStateIsSet', value);
+  }
+
+  String _slectedLanguge = 'ar';
+  String get slectedLanguge => _slectedLanguge;
+  set slectedLanguge(String value) {
+    _slectedLanguge = value;
+    prefs.setString('ff_slectedLanguge', value);
+  }
 }
 
 void _safeInit(Function() initializeField) {
