@@ -122,6 +122,10 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'en': 'Sign In',
       'ar': 'تسجيل الدخول',
     },
+    'djsnjksnd': {
+      'en': 'My Students',
+      'ar': 'طلابي',
+    },
     'p1q3452w': {
       'en': 'Mobile Number',
       'ar': 'رقم الهاتف المحمول',

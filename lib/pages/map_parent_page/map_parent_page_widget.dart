@@ -228,7 +228,7 @@ class _MapPageWidgetState extends State<MapParentPageWidget> {
             children: [
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(
-                    15.0, 10.0, 15.0, 10.0),
+                    15.0, 40.0, 15.0, 10.0),
                 child: InkWell(
                   splashColor: Colors.transparent,
                   focusColor: Colors.transparent,
@@ -262,26 +262,68 @@ class _MapPageWidgetState extends State<MapParentPageWidget> {
                           ),
                         ),
                       ),
-                      Flexible(
+                      const Flexible(
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Stack(
-                              children: [
-                                if (FFAppState().slectedLanguge == 'ar')
-                                  const Icon(
-                                    Icons.keyboard_arrow_left,
-                                    color: Color(0xFFBFBFC1),
-                                    size: 24.0,
-                                  ),
-                                if (FFAppState().slectedLanguge == 'en')
-                                  const Icon(
-                                    Icons.keyboard_arrow_right,
-                                    color: Color(0xFFBFBFC1),
-                                    size: 24.0,
-                                  ),
-                              ],
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: Color(0xFFBFBFC1),
+                              size: 18.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                    15.0, 20.0, 15.0, 10.0),
+                child: InkWell(
+                  splashColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () async {
+                    context.pushNamed('PersonalPage');
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.accessibility,
+                        color:
+                        FlutterFlowTheme.of(context).secondaryText,
+                        size: 24.0,
+                      ),
+                      Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                            10.0, 0.0, 0.0, 0.0),
+                        child: Text(
+                          FFLocalizations.of(context).getText(
+                            'djsnjksnd' /* Profile */,
+                          ),
+                          style: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .override(
+                            fontFamily: 'Cairo',
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      const Flexible(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: Color(0xFFBFBFC1),
+                              size: 18.0,
                             ),
                           ],
                         ),
