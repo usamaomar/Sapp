@@ -27,6 +27,9 @@ class StrackerApisGroup {
       UpdateStudentStatusApiCall();
   static UpdateLiveLocationCall updateLiveLocationCall =
       UpdateLiveLocationCall();
+  static NewStudentApiCall newStudentApiCall = NewStudentApiCall();
+  static MyStudentsApiCall myStudentsApiCall = MyStudentsApiCall();
+  static GetBranchesApiCall getBranchesApiCall = GetBranchesApiCall();
 }
 
 class LoginApiCall {
@@ -187,6 +190,92 @@ class UpdateLiveLocationCall {
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+class NewStudentApiCall {
+  Future<ApiCallResponse> call({
+    String? studentName = '',
+    FFUploadedFile? studentImage,
+    int? branchId,
+    String? authorization = '',
+  }) async {
+    final baseUrl = StrackerApisGroup.getBaseUrl(
+      authorization: authorization,
+    );
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'NewStudentApi',
+      apiUrl: '$baseUrl/myStudents/store',
+      callType: ApiCallType.POST,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authorization',
+      },
+      params: {
+        'branch_id': branchId,
+        'student_name': studentName,
+        'student_image': studentImage,
+      },
+      bodyType: BodyType.MULTIPART,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+class MyStudentsApiCall {
+  Future<ApiCallResponse> call({
+    String? authorization = '',
+  }) async {
+    final baseUrl = StrackerApisGroup.getBaseUrl(
+      authorization: authorization,
+    );
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'MyStudentsApi',
+      apiUrl: '$baseUrl/myStudents',
+      callType: ApiCallType.GET,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authorization',
+      },
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+class GetBranchesApiCall {
+  Future<ApiCallResponse> call({
+    String? authorization = '',
+  }) async {
+    final baseUrl = StrackerApisGroup.getBaseUrl(
+      authorization: authorization,
+    );
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'GetBranches Api',
+      apiUrl: '$baseUrl/getBranches',
+      callType: ApiCallType.GET,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authorization',
+      },
+      params: {},
       returnBody: true,
       encodeBodyUtf8: false,
       decodeUtf8: false,
