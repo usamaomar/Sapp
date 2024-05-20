@@ -41,6 +41,9 @@ class FFAppState extends ChangeNotifier {
       }
     });
     _safeInit(() {
+      _FCM = prefs.getString('ff_FCM') ?? _FCM;
+    });
+    _safeInit(() {
       _fullParentStateList = prefs
               .getStringList('ff_fullParentStateList')
               ?.map((x) {
@@ -59,9 +62,9 @@ class FFAppState extends ChangeNotifier {
       _isLiveLocationStarted =
           prefs.getBool('ff_isLiveLocationStarted') ?? _isLiveLocationStarted;
     });
-    _safeInit(() {
-      _isGoStateIsSet = prefs.getBool('ff_isGoStateIsSet') ?? _isGoStateIsSet;
-    });
+    // _safeInit(() {
+    //   _isGoStateIsSet = prefs.getBool('ff_isGoStateIsSet') ?? _isGoStateIsSet;
+    // });
   }
 
   void update(VoidCallback callback) {
@@ -81,6 +84,15 @@ class FFAppState extends ChangeNotifier {
   void updateUserModelStateStruct(Function(UserModelStruct) updateFn) {
     updateFn(_UserModelState);
     prefs.setString('ff_UserModelState', _UserModelState.serialize());
+  }
+
+  String _FCM = '';
+
+  String get FCM => _FCM;
+
+  set FCM(String _value) {
+    _FCM = _value;
+    prefs.setString('ff_FCM', _value);
   }
 
   TokenModelStruct _TokenModelState = TokenModelStruct();
@@ -144,12 +156,12 @@ class FFAppState extends ChangeNotifier {
     prefs.setBool('ff_isLiveLocationStarted', value);
   }
 
-  bool _isGoStateIsSet = false;
-  bool get isGoStateIsSet => _isGoStateIsSet;
-  set isGoStateIsSet(bool value) {
-    _isGoStateIsSet = value;
-    prefs.setBool('ff_isGoStateIsSet', value);
-  }
+  // bool _isGoStateIsSet = false;
+  // bool get isGoStateIsSet => _isGoStateIsSet;
+  // set isGoStateIsSet(bool value) {
+  //   _isGoStateIsSet = value;
+  //   prefs.setBool('ff_isGoStateIsSet', value);
+  // }
 }
 
 void _safeInit(Function() initializeField) {

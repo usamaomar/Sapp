@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -19,19 +20,20 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:provider/provider.dart';
-import 'map_page_model.dart';
-export 'map_page_model.dart';
+import 'map_parent_page_model.dart';
+export 'map_parent_page_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as lats;
 import 'dart:ui' as ui;
 
-class MapPageWidget extends StatefulWidget {
-  const MapPageWidget({super.key});
+class MapParentPageWidget extends StatefulWidget {
+  const MapParentPageWidget({super.key});
 
   @override
-  State<MapPageWidget> createState() => _MapPageWidgetState();
+  State<MapParentPageWidget> createState() => _MapPageWidgetState();
 }
-class _MapPageWidgetState extends State<MapPageWidget> {
-  late MapPageModel _model;
+
+class _MapPageWidgetState extends State<MapParentPageWidget> {
+  late MapParentPageModel _model;
   LatLng? currentLocation;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   late LocationSettings locationSettings;
@@ -39,13 +41,14 @@ class _MapPageWidgetState extends State<MapPageWidget> {
   late GoogleMapController mapController;
   late Set<Marker> markers;
   Position? position;
+
   // LatLng? currentLatLng;
 
   @override
   void initState() {
     markers = <Marker>{};
     super.initState();
-    _model = createModel(context, () => MapPageModel());
+    _model = createModel(context, () => MapParentPageModel());
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       setState(() {
         FFAppState().fullParentStateList.map((data) {
@@ -164,14 +167,14 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                             return data;
                           });
                         });
-                        Navigator.pop(context,true);
+                        Navigator.pop(context, true);
                       },
                     ),
                   ),
                 );
               },
             ).then((value) {
-              if(value != true){
+              if (value != true) {
                 setState(() {
                   data.isShowOnMap = false;
                 });
@@ -315,34 +318,58 @@ class _MapPageWidgetState extends State<MapPageWidget> {
           automaticallyImplyLeading: false,
           title: Row(
             mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  InkWell(
+                    splashColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: () async {
+                      scaffoldKey.currentState!.openDrawer();
+                    },
+                    child: Icon(
+                      Icons.list_outlined,
+                      color: Colors.white,
+                      size: 35.0,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        10.0, 0.0, 10.0, 0.0),
+                    child: Text(
+                      FFLocalizations.of(context).getText(
+                        '8ejc2hr8' /* Map */,
+                      ),
+                      style:
+                          FlutterFlowTheme.of(context).headlineMedium.override(
+                                fontFamily: 'Outfit',
+                                color: Colors.white,
+                                fontSize: 22.0,
+                                letterSpacing: 0.0,
+                              ),
+                    ),
+                  ),
+                ],
+              ),
               InkWell(
                 splashColor: Colors.transparent,
                 focusColor: Colors.transparent,
                 hoverColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onTap: () async {
-                  scaffoldKey.currentState!.openDrawer();
+
+
+
                 },
                 child: Icon(
-                  Icons.list_outlined,
-                  color: FlutterFlowTheme.of(context).alternate,
+                  Icons.notifications,
+                  color: Colors.white,
                   size: 35.0,
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
-                child: Text(
-                  FFLocalizations.of(context).getText(
-                    '8ejc2hr8' /* Map */,
-                  ),
-                  style: FlutterFlowTheme.of(context).headlineMedium.override(
-                        fontFamily: 'Outfit',
-                        color: Colors.white,
-                        fontSize: 22.0,
-                        letterSpacing: 0.0,
-                      ),
                 ),
               ),
             ],
@@ -382,80 +409,75 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                         onPressed: () async {
                           checkPermition().catchError((onError) async {
                             if (onError.toString().isEmpty) {
-                                if (FFAppState().isLiveLocationStarted) {
+                              if (FFAppState().isLiveLocationStarted) {
+                                setState(() {
+                                  _model.isLoading = true;
+                                });
+                                _model.apiResultEndTrip =
+                                    await StrackerApisGroup.endTripApiCall.call(
+                                        authorization:
+                                            FFAppState().TokenModelState.token);
+                                if ((_model.apiResultEndTrip?.succeeded ??
+                                    true)) {
                                   setState(() {
-                                    _model.isLoading = true;
+                                    _model.isLoading = false;
+                                    FFAppState().isLiveLocationStarted = false;
                                   });
-                                  _model.apiResultEndTrip =
-                                      await StrackerApisGroup.endTripApiCall
-                                          .call(
-                                              authorization: FFAppState()
-                                                  .TokenModelState
-                                                  .token);
-                                  if ((_model.apiResultEndTrip?.succeeded ??
-                                      true)) {
-                                    setState(() {
-                                      _model.isLoading = false;
-                                      FFAppState().isLiveLocationStarted =
-                                          false;
-                                    });
-                                    setState(() {
-                                      FFAppState().fullParentStateList.clear();
-                                      markers.clear();
-                                    });
-                                    positionStream.pause();
-                                    positionStream.cancel();
-                                    addPointAsMarker(
-                                        'assets/images/bus_5.png',
-                                        position?.latitude ?? 0.0,
-                                        position?.longitude ?? 0.0,
-                                        "assets/images/bus_5.png",
-                                        FFAppState().UserModelState.name,
-                                        100);
-                                  } else {
-                                    setState(() {
-                                      _model.isLoading = false;
-                                    });
-                                    await showDialog(
-                                      context: context,
-                                      builder: (alertDialogContext) {
-                                        return AlertDialog(
-                                          title: Text(
-                                              FFLocalizations.of(context)
-                                                  .getVariableText(
-                                            enText: 'Error',
-                                            arText: 'خطا',
-                                          )),
-                                          content: Text(getJsonField(
-                                            (_model.apiResultqus?.jsonBody ??
-                                                ''),
-                                            r'''$.message''',
-                                          ).toString()),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(
-                                                  alertDialogContext),
-                                              child: Text(
-                                                  FFLocalizations.of(context)
-                                                      .getVariableText(
-                                                enText: 'Ok',
-                                                arText: 'حسنا',
-                                              )),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  }
+                                  setState(() {
+                                    FFAppState().fullParentStateList.clear();
+                                    markers.clear();
+                                  });
+                                  positionStream.pause();
+                                  positionStream.cancel();
+                                  addPointAsMarker(
+                                      'assets/images/bus_5.png',
+                                      position?.latitude ?? 0.0,
+                                      position?.longitude ?? 0.0,
+                                      "assets/images/bus_5.png",
+                                      FFAppState().UserModelState.name,
+                                      100);
                                 } else {
                                   setState(() {
-                                    _model.isLoading = true;
+                                    _model.isLoading = false;
                                   });
-                                  _determinePosition().then((value) async {
-                                    setState(() {
-                                      _model.googleMapsCenter =
-                                          LatLng(value.latitude, value.longitude);
-                                    });
+                                  await showDialog(
+                                    context: context,
+                                    builder: (alertDialogContext) {
+                                      return AlertDialog(
+                                        title: Text(FFLocalizations.of(context)
+                                            .getVariableText(
+                                          enText: 'Error',
+                                          arText: 'خطا',
+                                        )),
+                                        content: Text(getJsonField(
+                                          (_model.apiResultqus?.jsonBody ?? ''),
+                                          r'''$.message''',
+                                        ).toString()),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                alertDialogContext),
+                                            child: Text(
+                                                FFLocalizations.of(context)
+                                                    .getVariableText(
+                                              enText: 'Ok',
+                                              arText: 'حسنا',
+                                            )),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              } else {
+                                setState(() {
+                                  _model.isLoading = true;
+                                });
+                                _determinePosition().then((value) async {
+                                  setState(() {
+                                    _model.googleMapsCenter =
+                                        LatLng(value.latitude, value.longitude);
+                                  });
                                   setState(() {
                                     _model.isLoading = false;
                                   });
@@ -492,13 +514,12 @@ class _MapPageWidgetState extends State<MapPageWidget> {
                                   ).then((value) => setState(() {
                                         positionStream.resume();
                                       }));
-                                  }).catchError((err) {
-                                    setState(() {
-                                      _model.isLoading = false;
-                                    });
+                                }).catchError((err) {
+                                  setState(() {
+                                    _model.isLoading = false;
                                   });
-                                }
-
+                                });
+                              }
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -625,7 +646,9 @@ class _MapPageWidgetState extends State<MapPageWidget> {
           (_model.apiResultqus?.jsonBody ?? ''),
           r'''$''',
           true,
-        )!.toList().map<ParentModelStruct?>(ParentModelStruct.maybeFromMap)
+        )!
+                .toList()
+                .map<ParentModelStruct?>(ParentModelStruct.maybeFromMap)
                 .toList() as Iterable<ParentModelStruct?>)
             .withoutNulls
             .toList()

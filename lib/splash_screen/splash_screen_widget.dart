@@ -87,7 +87,11 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget> {
                       },
                       onEnded: () async {
                         if (FFAppState().TokenModelState.token != '') {
-                          context.goNamed('MapPage');
+                          if(FFAppState().UserModelState.currentTeamId == 2){
+                            context.goNamed('MapParentPage');
+                          }else{
+                            context.goNamed('MapPage');
+                          }
                         } else {
                           context.goNamed('LogInScreen');
                         }

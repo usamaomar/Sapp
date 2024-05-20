@@ -2,10 +2,10 @@ import '../../backend/api_requests/api_manager.dart';
 import '../../backend/schema/structs/student_model_struct.dart';
 import '/flutter_flow/flutter_flow_google_map.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import 'map_page_widget.dart' show MapPageWidget;
+import 'map_parent_page_widget.dart' show MapParentPageWidget;
 import 'package:flutter/material.dart';
 
-class MapPageModel extends FlutterFlowModel<MapPageWidget> {
+class MapParentPageModel extends FlutterFlowModel<MapParentPageWidget> {
   ///  Local state fields for this page.
 
   // List<LatLng> studentsLocationsList = [];

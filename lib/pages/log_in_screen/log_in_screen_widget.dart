@@ -1,3 +1,5 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 import '/backend/api_requests/api_calls.dart';
 import '/backend/schema/structs/index.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
@@ -28,29 +30,31 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
   final animationsMap = {
     'columnOnPageLoadAnimation': AnimationInfo(
       trigger: AnimationTrigger.onPageLoad,
-      effects: [
-        FadeEffect(
-          curve: Curves.easeInOut,
-          delay: 0.ms,
-          duration: 300.ms,
-          begin: 0.0,
-          end: 1.0,
-        ),
-        MoveEffect(
-          curve: Curves.easeInOut,
-          delay: 0.ms,
-          duration: 300.ms,
-          begin: const Offset(0.0, 60.0),
-          end: const Offset(0.0, 0.0),
-        ),
-        TiltEffect(
-          curve: Curves.easeInOut,
-          delay: 0.ms,
-          duration: 300.ms,
-          begin: const Offset(-0.349, 0),
-          end: const Offset(0, 0),
-        ),
-      ],
+      effectsBuilder: () {
+        return [
+          FadeEffect(
+            curve: Curves.easeInOut,
+            delay: 0.ms,
+            duration: 300.ms,
+            begin: 0.0,
+            end: 1.0,
+          ),
+          MoveEffect(
+            curve: Curves.easeInOut,
+            delay: 0.ms,
+            duration: 300.ms,
+            begin: const Offset(0.0, 60.0),
+            end: const Offset(0.0, 0.0),
+          ),
+          TiltEffect(
+            curve: Curves.easeInOut,
+            delay: 0.ms,
+            duration: 300.ms,
+            begin: const Offset(-0.349, 0),
+            end: const Offset(0, 0),
+          ),
+        ];
+      },
     ),
   };
 
@@ -67,6 +71,9 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
       });
     });
 
+    FirebaseMessaging.instance.getToken().then((fbToken) {
+      FFAppState().FCM = fbToken ?? 'null';
+    });
     _model.emailAddressController ??= TextEditingController();
     _model.emailAddressFocusNode ??= FocusNode();
 
@@ -121,8 +128,8 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding:
-                        const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        0.0, 20.0, 0.0, 0.0),
                     child: Container(
                       constraints: const BoxConstraints(
                         maxWidth: 602.0,
@@ -259,7 +266,9 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                       });
                                     },
                                     autofocus: false,
-                                    autofillHints: const [AutofillHints.password],
+                                    autofillHints: const [
+                                      AutofillHints.password
+                                    ],
                                     obscureText: !_model.passwordVisibility,
                                     decoration: InputDecoration(
                                       labelText:
@@ -317,7 +326,8 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                       filled: true,
                                       fillColor: FlutterFlowTheme.of(context)
                                           .secondaryBackground,
-                                      contentPadding: const EdgeInsets.all(24.0),
+                                      contentPadding:
+                                          const EdgeInsets.all(24.0),
                                       suffixIcon: InkWell(
                                         onTap: () => setState(
                                           () => _model.passwordVisibility =
@@ -376,12 +386,12 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                     onPressed: () async {
                                       var shouldSetState = false;
                                       if (_model.emailAddressController.text !=
-                                              '') {//0170416012473
+                                          '') {
                                         setState(() {
                                           _model.emailNotValid = false;
                                         });
                                         if (_model.passwordController.text ==
-                                                '') {
+                                            '') {
                                           setState(() {
                                             _model.passwordNotValid = true;
                                           });
@@ -423,9 +433,11 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                               r'''$''',
                                             ))!;
                                           });
-
-                                          context.pushReplacementNamed('MapPage');
-
+                                          if(FFAppState().UserModelState.currentTeamId == 2){
+                                            context.goNamed('MapParentPage');
+                                          }else{
+                                            context.goNamed('MapPage');
+                                          }
                                           if (shouldSetState) setState(() {});
                                           return;
                                         } else {
@@ -481,8 +493,9 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                     options: FFButtonOptions(
                                       width: 230.0,
                                       height: 52.0,
-                                      padding: const EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 0.0, 0.0, 0.0),
+                                      padding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              0.0, 0.0, 0.0, 0.0),
                                       iconPadding:
                                           const EdgeInsetsDirectional.fromSTEB(
                                               0.0, 0.0, 0.0, 0.0),

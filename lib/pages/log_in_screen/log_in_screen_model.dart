@@ -15,13 +15,13 @@ class LogInScreenModel extends FlutterFlowModel<LogInScreenWidget> {
   final unfocusNode = FocusNode();
   // State field(s) for emailAddress widget.
   FocusNode? emailAddressFocusNode;
-  TextEditingController? emailAddressTextController;
-  String? Function(BuildContext, String?)? emailAddressTextControllerValidator;
+  TextEditingController? emailAddressController;
+  String? Function(BuildContext, String?)? emailAddressControllerValidator;
   // State field(s) for password widget.
   FocusNode? passwordFocusNode;
-  TextEditingController? passwordTextController;
+  TextEditingController? passwordController;
   late bool passwordVisibility;
-  String? Function(BuildContext, String?)? passwordTextControllerValidator;
+  String? Function(BuildContext, String?)? passwordControllerValidator;
   // Stores action output result for [Backend Call - API (LoginApi)] action in Button widget.
   ApiCallResponse? apiResultqus;
 
@@ -34,9 +34,9 @@ class LogInScreenModel extends FlutterFlowModel<LogInScreenWidget> {
   void dispose() {
     unfocusNode.dispose();
     emailAddressFocusNode?.dispose();
-    emailAddressTextController?.dispose();
+    emailAddressController?.dispose();
 
     passwordFocusNode?.dispose();
-    passwordTextController?.dispose();
+    passwordController?.dispose();
   }
 }

@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import '../../backend/api_requests/api_calls.dart';
-import '../../backend/schema/structs/parent_model_struct.dart';
+import '../../backend/schema/structs/student_model_struct.dart';
 import '/flutter_flow/flutter_flow_swipeable_stack.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -11,11 +10,11 @@ import 'arrive_or_didnt_away_model.dart';
 export 'arrive_or_didnt_away_model.dart';
 
 class ArriveOrDidntAwayWidget extends StatefulWidget {
-  late ParentModelStruct parentModelStruct;
+  late List<StudentModelStruct>? students;
   final void Function()? actionFinish;
 
 
-  ArriveOrDidntAwayWidget({super.key, required this.parentModelStruct,required this.actionFinish});
+  ArriveOrDidntAwayWidget({super.key, required this.students,required this.actionFinish});
 
   @override
   State<ArriveOrDidntAwayWidget> createState() => _ArriveOrDidntAwayWidgetState();
@@ -82,42 +81,10 @@ class _ArriveOrDidntAwayWidgetState extends State<ArriveOrDidntAwayWidget> {
                   ],
                 ),
               ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Container(
-                    width: 121.0,
-                    height: 121.0,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        widget.parentModelStruct.pathUserImage,
-                        width: 120.0,
-                        height: 120.0,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 121.0,
-                    height: 121.0,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        widget.parentModelStruct.pathAnotherParentImage,
-                        width: 120.0,
-                        height: 120.0,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
               Expanded(
                 child: FlutterFlowSwipeableStack(
                   onSwipeFn: (index) {
-                   if((widget.parentModelStruct.students.length - 1) == index){
+                   if((widget.students!.length - 1) == index){
                      widget.actionFinish?.call();
                    }
                   },
@@ -125,8 +92,7 @@ class _ArriveOrDidntAwayWidgetState extends State<ArriveOrDidntAwayWidget> {
                     _model.apiUpdateStudentStatusApiCall =
                         await StrackerApisGroup.updateStudentStatusApiCall.call(
                         authorization: FFAppState().TokenModelState.token,
-                        studentId: widget
-                            .parentModelStruct.students[index].id
+                        studentId: widget.students?[index].id
                             .toString(),
                         status: 'present');
                     if ((_model.apiUpdateStudentStatusApiCall?.succeeded ??
@@ -166,8 +132,7 @@ class _ArriveOrDidntAwayWidgetState extends State<ArriveOrDidntAwayWidget> {
                     _model.apiUpdateStudentStatusApiCall =
                         await StrackerApisGroup.updateStudentStatusApiCall.call(
                             authorization: FFAppState().TokenModelState.token,
-                            studentId: widget
-                                .parentModelStruct.students[index].id
+                            studentId: widget.students?[index].id
                                 .toString(),
                             status: 'present');
                     if ((_model.apiUpdateStudentStatusApiCall?.succeeded ??
@@ -212,15 +177,14 @@ class _ArriveOrDidntAwayWidgetState extends State<ArriveOrDidntAwayWidget> {
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.network(
-                        widget
-                            .parentModelStruct.students[index].pathStudentImage,
+                        widget.students?[index].pathStudentImage ?? '',
                         width: double.infinity,
                         height: double.infinity,
                         fit: BoxFit.cover,
                       ),
                     );
                   },
-                  itemCount: widget.parentModelStruct.students.length,
+                  itemCount: widget.students?.length ?? 0,
                   controller: _model.swipeableStackController,
                   loop: false,
                   cardDisplayCount: 3,

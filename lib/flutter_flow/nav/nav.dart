@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../pages/map_parent_page/map_parent_page_widget.dart';
 import '/backend/schema/structs/index.dart';
 
 import '/index.dart';
@@ -52,6 +53,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'MapPage',
           path: '/mapPage',
           builder: (context, params) => const MapPageWidget(),
+        ),
+        FFRoute(
+          name: 'MapParentPage',
+          path: '/mapParentPage',
+          builder: (context, params) => const MapParentPageWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
