@@ -1,13 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 import '../../pages/map_parent_page/map_parent_page_widget.dart';
 import '/backend/schema/structs/index.dart';
 
 import '/index.dart';
+import '/main.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/lat_lng.dart';
+import '/flutter_flow/place.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import 'serialization_util.dart';
 
 export 'package:go_router/go_router.dart';
 export 'serialization_util.dart';
@@ -32,27 +39,27 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       initialLocation: '/',
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
-      errorBuilder: (context, state) => const SplashScreenWidget(),
+      errorBuilder: (context, state) => SplashScreenWidget(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
-          builder: (context, _) => const SplashScreenWidget(),
+          builder: (context, _) => SplashScreenWidget(),
         ),
         FFRoute(
           name: 'SplashScreen',
           path: '/splashScreen',
-          builder: (context, params) => const SplashScreenWidget(),
+          builder: (context, params) => SplashScreenWidget(),
         ),
         FFRoute(
           name: 'LogInScreen',
           path: '/logInScreen',
-          builder: (context, params) => const LogInScreenWidget(),
+          builder: (context, params) => LogInScreenWidget(),
         ),
         FFRoute(
           name: 'MapPage',
           path: '/mapPage',
-          builder: (context, params) => const MapPageWidget(),
+          builder: (context, params) => MapPageWidget(),
         ),
         FFRoute(
           name: 'MapParentPage',
@@ -62,7 +69,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'ParentMapPage',
           path: '/parentMapPage',
-          builder: (context, params) => const ParentMapPageWidget(),
+          builder: (context, params) => ParentMapPageWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
@@ -228,7 +235,7 @@ class TransitionInfo {
   final Duration duration;
   final Alignment? alignment;
 
-  static TransitionInfo appDefault() => const TransitionInfo(hasTransition: false);
+  static TransitionInfo appDefault() => TransitionInfo(hasTransition: false);
 }
 
 class RootPageContext {
