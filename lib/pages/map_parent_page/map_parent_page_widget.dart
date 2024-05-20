@@ -228,35 +228,66 @@ class _MapPageWidgetState extends State<MapParentPageWidget> {
             children: [
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(
-                    10.0, 30.0, 10.0, 10.0),
-                child: Container(
-                  width: 120.0,
-                  height: 120.0,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: Image.network(
-                    FFAppState().UserModelState.profilePhotoPath,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 10.0, 0.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      FFAppState().UserModelState.name,
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            fontFamily: 'Readex Pro',
-                            letterSpacing: 0.0,
+                    15.0, 10.0, 15.0, 10.0),
+                child: InkWell(
+                  splashColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () async {
+                    context.pushNamed('PersonalPage');
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.person,
+                        color:
+                        FlutterFlowTheme.of(context).secondaryText,
+                        size: 24.0,
+                      ),
+                      Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                            10.0, 0.0, 0.0, 0.0),
+                        child: Text(
+                          FFLocalizations.of(context).getText(
+                            'zm7ebcss' /* Profile */,
                           ),
-                    ),
-                  ],
+                          style: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .override(
+                            fontFamily: 'Cairo',
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Stack(
+                              children: [
+                                if (FFAppState().slectedLanguge == 'ar')
+                                  const Icon(
+                                    Icons.keyboard_arrow_left,
+                                    color: Color(0xFFBFBFC1),
+                                    size: 24.0,
+                                  ),
+                                if (FFAppState().slectedLanguge == 'en')
+                                  const Icon(
+                                    Icons.keyboard_arrow_right,
+                                    color: Color(0xFFBFBFC1),
+                                    size: 24.0,
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Flexible(

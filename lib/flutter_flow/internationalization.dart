@@ -169,6 +169,10 @@ final kTranslationsMap = <Map<String, Map<String, String>>>[
       'en': 'Home',
       'ar': '',
     },
+    'zm7ebcss': {
+      'en': 'Profile',
+      'ar': 'الملف الشخصي',
+    },
   },
   // ParentMapPage
   {

@@ -1,5 +1,4 @@
-import '/backend/api_requests/api_calls.dart';
-import '/backend/schema/structs/index.dart';
+ import '/backend/schema/structs/index.dart';
 import '/components/app_bar_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -29,57 +28,57 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
 
     // On page load action.
     _model.isLoading = true;
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.apiResultgu1 = await StudentApisGroup.newsMobileApiCall.call(
-        token: FFAppState().userModel.token,
-      );
-      if ((_model.apiResultgu1?.succeeded ?? true)) {
-        _model.isLoading = false;
-        setState(() {
-          _model.listOfNots = (getJsonField(
-            (_model.apiResultgu1?.jsonBody ?? ''),
-            r'''$.news''',
-            true,
-          )!
-                  .toList()
-                  .map<NewsModelStruct?>(NewsModelStruct.maybeFromMap)
-                  .toList() as Iterable<NewsModelStruct?>)
-              .withoutNulls
-              .toList()
-              .cast<NewsModelStruct>();
-        });
-      }else{
-        await showDialog(
-          context: context,
-          builder: (alertDialogContext) {
-            return AlertDialog(
-              title: Text(
-                  FFLocalizations.of(context)
-                      .getVariableText(
-                    enText: 'Error',
-                    arText: 'خطأ',
-                  )),
-              content: Text(functions.parseErrorMsg(
-                  (_model.apiResultgu1?.bodyText ??
-                      ''))),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(
-                      alertDialogContext),
-                  child: Text(
-                      FFLocalizations.of(context)
-                          .getVariableText(
-                        enText: 'Ok',
-                        arText: 'حسنا',
-                      )),
-                ),
-              ],
-            );
-          },
-        );
-        _model.isLoading = false;
-      }
-    });
+    // SchedulerBinding.instance.addPostFrameCallback((_) async {
+    //   _model.apiResultgu1 = await StudentApisGroup.newsMobileApiCall.call(
+    //     token: FFAppState().userModel.token,
+    //   );
+    //   if ((_model.apiResultgu1?.succeeded ?? true)) {
+    //     _model.isLoading = false;
+    //     setState(() {
+    //       _model.listOfNots = (getJsonField(
+    //         (_model.apiResultgu1?.jsonBody ?? ''),
+    //         r'''$.news''',
+    //         true,
+    //       )!
+    //               .toList()
+    //               .map<NewsModelStruct?>(NewsModelStruct.maybeFromMap)
+    //               .toList() as Iterable<NewsModelStruct?>)
+    //           .withoutNulls
+    //           .toList()
+    //           .cast<NewsModelStruct>();
+    //     });
+    //   }else{
+    //     await showDialog(
+    //       context: context,
+    //       builder: (alertDialogContext) {
+    //         return AlertDialog(
+    //           title: Text(
+    //               FFLocalizations.of(context)
+    //                   .getVariableText(
+    //                 enText: 'Error',
+    //                 arText: 'خطأ',
+    //               )),
+    //           content: Text(functions.parseErrorMsg(
+    //               (_model.apiResultgu1?.bodyText ??
+    //                   ''))),
+    //           actions: [
+    //             TextButton(
+    //               onPressed: () => Navigator.pop(
+    //                   alertDialogContext),
+    //               child: Text(
+    //                   FFLocalizations.of(context)
+    //                       .getVariableText(
+    //                     enText: 'Ok',
+    //                     arText: 'حسنا',
+    //                   )),
+    //             ),
+    //           ],
+    //         );
+    //       },
+    //     );
+    //     _model.isLoading = false;
+    //   }
+    // });
   }
 
   @override

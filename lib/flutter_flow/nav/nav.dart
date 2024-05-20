@@ -6,6 +6,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 import '../../pages/map_parent_page/map_parent_page_widget.dart';
+import '../../pages/notification_details_page/notification_details_page_widget.dart';
+import '../../pages/notification_page/notification_page_widget.dart';
 import '/backend/schema/structs/index.dart';
 
 import '/index.dart';
@@ -25,6 +27,7 @@ class AppStateNotifier extends ChangeNotifier {
   AppStateNotifier._();
 
   static AppStateNotifier? _instance;
+
   static AppStateNotifier get instance => _instance ??= AppStateNotifier._();
 
   bool showSplashImage = true;
@@ -67,6 +70,18 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => const MapParentPageWidget(),
         ),
         FFRoute(
+          name: 'NotificationPage',
+          path: '/notificationPageWidget',
+          builder: (context, params) => const NotificationPageWidget(),
+        ),
+        FFRoute(
+          name: 'NotificationDetailsPage',
+          path: '/notificationDetailsPage',
+          builder: (context, params) => NotificationDetailsPageWidget(
+            notiDynamic: params.getParam('notiDynamic', ParamType.JSON),
+          ),
+        ),
+        FFRoute(
           name: 'ParentMapPage',
           path: '/parentMapPage',
           builder: (context, params) => ParentMapPageWidget(),
@@ -97,10 +112,12 @@ extension NavigationExtensions on BuildContext {
 extension _GoRouterStateExtensions on GoRouterState {
   Map<String, dynamic> get extraMap =>
       extra != null ? extra as Map<String, dynamic> : {};
+
   Map<String, dynamic> get allParams => <String, dynamic>{}
     ..addAll(pathParameters)
     ..addAll(uri.queryParameters)
     ..addAll(extraMap);
+
   TransitionInfo get transitionInfo => extraMap.containsKey(kTransitionInfoKey)
       ? extraMap[kTransitionInfoKey] as TransitionInfo
       : TransitionInfo.appDefault();
@@ -120,9 +137,12 @@ class FFParameters {
       state.allParams.isEmpty ||
       (state.allParams.length == 1 &&
           state.extraMap.containsKey(kTransitionInfoKey));
+
   bool isAsyncParam(MapEntry<String, dynamic> param) =>
       asyncParams.containsKey(param.key) && param.value is String;
+
   bool get hasFutures => state.allParams.entries.any(isAsyncParam);
+
   Future<bool> completeFutures() => Future.wait(
         state.allParams.entries.where(isAsyncParam).map(
           (param) async {
@@ -240,6 +260,7 @@ class TransitionInfo {
 
 class RootPageContext {
   const RootPageContext(this.isRootPage, [this.errorRoute]);
+
   final bool isRootPage;
   final String? errorRoute;
 

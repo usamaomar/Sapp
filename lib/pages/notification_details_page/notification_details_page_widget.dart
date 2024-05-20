@@ -90,7 +90,7 @@ class _NotificationDetailsPageWidgetState
               ClipRRect(
                 borderRadius: BorderRadius.circular(0.0),
                 child: Image.network(
-                  _model.notiModel!.img,
+                  '_model.notiModel!.img',
                   width: double.infinity,
                   height: 200.0,
                   fit: BoxFit.cover,
@@ -127,7 +127,7 @@ class _NotificationDetailsPageWidgetState
                                   padding: const EdgeInsetsDirectional.fromSTEB(
                                       0.0, 5.0, 0.0, 0.0),
                                   child: Text(
-                                    _model.notiModel!.description,
+                                    '_model.notiModel!.description',
                                     maxLines: 3,
                                     style: FlutterFlowTheme.of(context)
                                         .bodyMedium
