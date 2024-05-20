@@ -14,13 +14,15 @@ class BranchStruct extends BaseStruct {
     String? branchPhoto,
     String? createdAt,
     String? updatedAt,
+    bool? isSelected,
   })  : _id = id,
         _name = name,
         _lat = lat,
         _lng = lng,
         _branchPhoto = branchPhoto,
         _createdAt = createdAt,
-        _updatedAt = updatedAt;
+        _updatedAt = updatedAt,
+        _isSelected = isSelected;
 
   // "id" field.
   int? _id;
@@ -65,6 +67,12 @@ class BranchStruct extends BaseStruct {
   set updatedAt(String? val) => _updatedAt = val;
   bool hasUpdatedAt() => _updatedAt != null;
 
+  // "isSelected" field.
+  bool? _isSelected;
+  bool get isSelected => _isSelected ?? false;
+  set isSelected(bool? val) => _isSelected = val;
+  bool hasIsSelected() => _isSelected != null;
+
   static BranchStruct fromMap(Map<String, dynamic> data) => BranchStruct(
         id: castToType<int>(data['id']),
         name: data['name'] as String?,
@@ -73,6 +81,7 @@ class BranchStruct extends BaseStruct {
         branchPhoto: data['branch_photo'] as String?,
         createdAt: data['created_at'] as String?,
         updatedAt: data['updated_at'] as String?,
+        isSelected: data['isSelected'] as bool?,
       );
 
   static BranchStruct? maybeFromMap(dynamic data) =>
@@ -86,6 +95,7 @@ class BranchStruct extends BaseStruct {
         'branch_photo': _branchPhoto,
         'created_at': _createdAt,
         'updated_at': _updatedAt,
+        'isSelected': _isSelected,
       }.withoutNulls;
 
   @override
@@ -117,6 +127,10 @@ class BranchStruct extends BaseStruct {
         'updated_at': serializeParam(
           _updatedAt,
           ParamType.String,
+        ),
+        'isSelected': serializeParam(
+          _isSelected,
+          ParamType.bool,
         ),
       }.withoutNulls;
 
@@ -157,6 +171,11 @@ class BranchStruct extends BaseStruct {
           ParamType.String,
           false,
         ),
+        isSelected: deserializeParam(
+          data['isSelected'],
+          ParamType.bool,
+          false,
+        ),
       );
 
   @override
@@ -171,12 +190,13 @@ class BranchStruct extends BaseStruct {
         lng == other.lng &&
         branchPhoto == other.branchPhoto &&
         createdAt == other.createdAt &&
-        updatedAt == other.updatedAt;
+        updatedAt == other.updatedAt &&
+        isSelected == other.isSelected;
   }
 
   @override
-  int get hashCode => const ListEquality()
-      .hash([id, name, lat, lng, branchPhoto, createdAt, updatedAt]);
+  int get hashCode => const ListEquality().hash(
+      [id, name, lat, lng, branchPhoto, createdAt, updatedAt, isSelected]);
 }
 
 BranchStruct createBranchStruct({
@@ -187,6 +207,7 @@ BranchStruct createBranchStruct({
   String? branchPhoto,
   String? createdAt,
   String? updatedAt,
+  bool? isSelected,
 }) =>
     BranchStruct(
       id: id,
@@ -196,4 +217,5 @@ BranchStruct createBranchStruct({
       branchPhoto: branchPhoto,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      isSelected: isSelected,
     );
