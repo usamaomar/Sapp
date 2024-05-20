@@ -2,8 +2,6 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'go_or_back_model.dart';
 export 'go_or_back_model.dart';
 
@@ -53,14 +51,14 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(10.0, 20.0, 10.0, 30.0),
+        padding: const EdgeInsetsDirectional.fromSTEB(10.0, 20.0, 10.0, 30.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 10.0),
+              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 10.0),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -86,7 +84,7 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
               children: [
                 Padding(
                   padding:
-                      EdgeInsetsDirectional.fromSTEB(120.0, 20.0, 120.0, 20.0),
+                      const EdgeInsetsDirectional.fromSTEB(120.0, 20.0, 120.0, 20.0),
                   child: FFButtonWidget(
                     onPressed: () {
                       print('Button pressed ...');
@@ -94,16 +92,16 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
                     text: FFLocalizations.of(context).getText(
                       'lmv8tuce' /* Go */,
                     ),
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.call_missed_outgoing,
                       size: 15.0,
                     ),
                     options: FFButtonOptions(
                       height: 40.0,
                       padding:
-                          EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                          const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                       iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                          const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                       color: FlutterFlowTheme.of(context).primary,
                       textStyle:
                           FlutterFlowTheme.of(context).titleSmall.override(
@@ -112,7 +110,7 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
                                 letterSpacing: 0.0,
                               ),
                       elevation: 3.0,
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: Colors.transparent,
                         width: 1.0,
                       ),
@@ -122,7 +120,7 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
                 ),
                 Padding(
                   padding:
-                      EdgeInsetsDirectional.fromSTEB(120.0, 20.0, 120.0, 20.0),
+                      const EdgeInsetsDirectional.fromSTEB(120.0, 20.0, 120.0, 20.0),
                   child: FFButtonWidget(
                     onPressed: () {
                       print('Button pressed ...');
@@ -130,16 +128,16 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
                     text: FFLocalizations.of(context).getText(
                       'ainho1h0' /* Away */,
                     ),
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.settings_backup_restore_sharp,
                       size: 15.0,
                     ),
                     options: FFButtonOptions(
                       height: 40.0,
                       padding:
-                          EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                          const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                       iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                          const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                       color: FlutterFlowTheme.of(context).tertiary,
                       textStyle:
                           FlutterFlowTheme.of(context).titleSmall.override(
@@ -148,7 +146,7 @@ class _GoOrBackWidgetState extends State<GoOrBackWidget> {
                                 letterSpacing: 0.0,
                               ),
                       elevation: 3.0,
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: Colors.transparent,
                         width: 1.0,
                       ),
