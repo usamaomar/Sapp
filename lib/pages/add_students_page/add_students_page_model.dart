@@ -1,3 +1,4 @@
+import '../../backend/schema/structs/branch_struct.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'add_students_page_widget.dart' show AddStudentsPageWidget;
@@ -15,6 +16,8 @@ class AddStudentsPageModel extends FlutterFlowModel<AddStudentsPageWidget> {
   Completer<ApiCallResponse>? apiRequestCompleter;
   // Stores action output result for [Backend Call - API (NewStudentApi)] action in Icon widget.
   ApiCallResponse? apiResult96w;
+  ApiCallResponse? apiGetBranches;
+  List<BranchStruct> listOfLocals = [];
 
   @override
   void initState(BuildContext context) {}

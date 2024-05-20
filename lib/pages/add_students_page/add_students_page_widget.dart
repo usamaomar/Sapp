@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/scheduler.dart';
 
 import '/backend/api_requests/api_calls.dart';
 import '/backend/schema/structs/index.dart';
@@ -30,6 +31,23 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
 
     _model.textController ??= TextEditingController();
     _model.textFieldFocusNode ??= FocusNode();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      _model.apiGetBranches = await StrackerApisGroup.getBranchesApiCall.call(
+        authorization: FFAppState().TokenModelState.token,
+      );
+      if ((_model.apiGetBranches?.succeeded ?? true)) {
+        setState(() {
+          _model.listOfLocals = (_model.apiGetBranches?.jsonBody['branches']
+              .toList()
+              .map<BranchStruct?>(BranchStruct.maybeFromMap)
+              .toList() as Iterable<BranchStruct?>)
+              .withoutNulls
+              .toList() ??
+              [];
+        });
+      }
+    });
   }
 
   @override
@@ -141,7 +159,8 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
             mainAxisSize: MainAxisSize.max,
             children: [
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 15.0, 16.0, 10.0),
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                    16.0, 15.0, 16.0, 10.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -175,8 +194,8 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
                   Container(
                     width: 120.0,
                     height: 120.0,
-                    decoration: BoxDecoration(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                    decoration: const BoxDecoration(
+                      color: Colors.black45,
                       shape: BoxShape.circle,
                     ),
                     child: Column(
@@ -194,7 +213,8 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 25.0, 16.0, 0.0),
+                padding:
+                    const EdgeInsetsDirectional.fromSTEB(16.0, 25.0, 16.0, 0.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -213,7 +233,8 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
               ),
               Flexible(
                 child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(8.0, 20.0, 8.0, 20.0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                      8.0, 20.0, 8.0, 20.0),
                   child: TextFormField(
                     controller: _model.textController,
                     focusNode: _model.textFieldFocusNode,
@@ -272,7 +293,8 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 15.0, 16.0, 5.0),
+                padding:
+                    const EdgeInsetsDirectional.fromSTEB(16.0, 15.0, 16.0, 5.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -289,128 +311,102 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
                   ],
                 ),
               ),
-              FutureBuilder<ApiCallResponse>(
-                future:
-                    (_model.apiRequestCompleter ??= Completer<ApiCallResponse>()
-                          ..complete(StrackerApisGroup.getBranchesApiCall.call(
-                            authorization: FFAppState().TokenModelState.token,
-                          )))
-                        .future,
-                builder: (context, snapshot) {
-                  // Customize what your widget looks like when it's loading.
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: SizedBox(
-                        width: 50.0,
-                        height: 50.0,
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            FlutterFlowTheme.of(context).primary,
-                          ),
-                        ),
+              ListView.builder(
+                padding: EdgeInsets.zero,
+                primary: false,
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: _model.listOfLocals.length,
+                itemBuilder: (context, localListIndex) {
+                  final localListItem = _model.listOfLocals[localListIndex];
+                  return Material(
+                    color: Colors.transparent,
+                    elevation: 2.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: FlutterFlowTheme.of(context)
+                            .secondaryBackground,
                       ),
-                    );
-                  }
-                  final listViewGetBranchesApiResponse = snapshot.data!;
-                  return Builder(
-                    builder: (context) {
-                      final localList = (listViewGetBranchesApiResponse.jsonBody['branches']
-                                  .toList()
-                                  .map<BranchStruct?>(BranchStruct.maybeFromMap)
-                                  .toList() as Iterable<BranchStruct?>)
-                              .withoutNulls
-                              .toList() ??
-                          [];
-                      return RefreshIndicator(
-                        onRefresh: () async {
-                          setState(() => _model.apiRequestCompleter = null);
-                          await _model.waitForApiRequestCompleted();
-                        },
-                        child: ListView.builder(
-                          padding: EdgeInsets.zero,
-                          primary: false,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemCount: localList.length,
-                          itemBuilder: (context, localListIndex) {
-                            final localListItem = localList[localListIndex];
-                            return Material(
-                              color: Colors.transparent,
-                              elevation: 2.0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryBackground,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      16.0, 15.0, 16.0, 15.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: 25.0,
-                                            height: 25.0,
-                                            clipBehavior: Clip.antiAlias,
-                                            decoration: const BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.white
-                                            ),
-                                            child: Image.network(
-                                              'https://picsum.photos/seed/323/600',
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsetsDirectional.fromSTEB(
-                                                    15.0, 0.0, 15.0, 0.0),
-                                            child: Text(
-                                              localListItem.name,
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily:
-                                                            'Readex Pro',
-                                                        letterSpacing: 0.0,
-                                                      ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Stack(
-                                        children: [
-                                          Icon(
-                                            Icons.radio_button_checked,
-                                            color: FlutterFlowTheme.of(context)
-                                                .warning,
-                                            size: 24.0,
-                                          ),
-                                          Icon(
-                                            Icons.radio_button_off,
-                                            color: FlutterFlowTheme.of(context)
-                                                .warning,
-                                            size: 24.0,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                            16.0, 15.0, 16.0, 15.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment:
+                              MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 25.0,
+                                  height: 25.0,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white),
+                                  child: Image.network(
+                                    'https://picsum.photos/seed/323/600',
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
+                                Padding(
+                                  padding: const EdgeInsetsDirectional
+                                      .fromSTEB(15.0, 0.0, 15.0, 0.0),
+                                  child: Text(
+                                    localListItem.name,
+                                    style:
+                                    FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .override(
+                                      fontFamily:
+                                      'Readex Pro',
+                                      letterSpacing: 0.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _model.listOfLocals
+                                      .map(
+                                          (e) => e.isSelected = false)
+                                      .toList();
+                                  _model.listOfLocals.map((e) {
+                                    if (e.id == localListItem.id) {
+                                      localListItem.isSelected = true;
+                                    }
+                                  }).toList();
+                                });
+                              },
+                              child: Stack(
+                                children: [
+                                  localListItem.isSelected
+                                      ? Icon(
+                                    Icons.radio_button_checked,
+                                    color: FlutterFlowTheme.of(
+                                        context)
+                                        .warning,
+                                    size: 24.0,
+                                  )
+                                      : Icon(
+                                    Icons.radio_button_off,
+                                    color: FlutterFlowTheme.of(
+                                        context)
+                                        .warning,
+                                    size: 24.0,
+                                  ),
+                                ],
                               ),
-                            );
-                          },
+                            ),
+                          ],
                         ),
-                      );
-                    },
+                      ),
+                    ),
                   );
                 },
               ),
