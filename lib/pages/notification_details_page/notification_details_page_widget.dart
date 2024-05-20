@@ -55,32 +55,43 @@ class _NotificationDetailsPageWidgetState
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(53.0),
-          child: AppBar(
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            automaticallyImplyLeading: false,
-            title: wrapWithModel(
-              model: _model.appBarModel,
-              updateCallback: () => setState(() {}),
-              child: AppBarWidget(
-                rightIcon: Container(),
-                isRightHedding: false,
-                isLeftHedding: false,
-                title: FFLocalizations.of(context).getVariableText(
-                  enText: 'Notification',
-                  arText: 'الاشعارات',
+        appBar: AppBar(
+          backgroundColor: FlutterFlowTheme.of(context).primary,
+          automaticallyImplyLeading: false,
+          title: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              InkWell(
+                child: const Icon(
+                  Icons.arrow_back_rounded,
+                  color: Colors.white,
+                  size: 30.0,
                 ),
-                rightButtonAction: () async {
-                  context.pushNamed('NotificationDetailsPage');
+                onTap: () async {
+                  context.pop();
                 },
               ),
-            ),
-            actions: const [],
-            centerTitle: false,
-            toolbarHeight: 46.0,
-            elevation: 2.0,
+              Padding(
+                padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: Text(
+                  FFLocalizations.of(context).getVariableText(
+                    enText: 'Notifications',
+                    arText: 'الاشعارات',
+                  ),
+                  style: FlutterFlowTheme.of(context).headlineMedium.override(
+                    fontFamily: 'Outfit',
+                    color: Colors.white,
+                    fontSize: 22.0,
+                    letterSpacing: 0.0,
+                  ),
+                ),
+              ),
+            ],
           ),
+          actions: const [],
+          centerTitle: false,
+          elevation: 2.0,
         ),
         body: SafeArea(
           top: true,

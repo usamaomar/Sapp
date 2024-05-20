@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
+
 import '/backend/api_requests/api_calls.dart';
 import '/backend/schema/structs/index.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'dart:async';
@@ -44,49 +45,54 @@ class _MyStudentsPageWidgetState extends State<MyStudentsPageWidget> {
           : FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        backgroundColor: FlutterFlowTheme.of(context).white,
         appBar: AppBar(
           backgroundColor: FlutterFlowTheme.of(context).primary,
           automaticallyImplyLeading: false,
           title: Row(
             mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              FlutterFlowIconButton(
-                borderColor: Colors.transparent,
-                borderRadius: 30.0,
-                borderWidth: 1.0,
-                buttonSize: 60.0,
-                icon: const Icon(
+              InkWell(
+                child: const Icon(
                   Icons.arrow_back_rounded,
                   color: Colors.white,
                   size: 30.0,
                 ),
-                onPressed: () async {
+                onTap: () async {
                   context.pop();
                 },
               ),
-              Text(
-                FFLocalizations.of(context).getText(
-                  '64v3k77t' /* My Students */,
+              Padding(
+                padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: Text(
+                  FFLocalizations.of(context).getText(
+                    '64v3k77t' /* My Students */,
+                  ),
+                  style: FlutterFlowTheme.of(context).headlineMedium.override(
+                        fontFamily: 'Outfit',
+                        color: Colors.white,
+                        fontSize: 22.0,
+                        letterSpacing: 0.0,
+                      ),
                 ),
-                style: FlutterFlowTheme.of(context).headlineMedium.override(
-                      fontFamily: 'Outfit',
-                      color: Colors.white,
-                      fontSize: 22.0,
-                      letterSpacing: 0.0,
-                    ),
               ),
               Expanded(
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Icon(
-                      Icons.add_circle,
-                      color: FlutterFlowTheme.of(context).white,
-                      size: 24.0,
-                    ),
-                  ],
+                child: InkWell(
+                  onTap: () {
+                    context.pushNamed('AddStudentsPage');
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Icon(
+                        Icons.add_circle,
+                        color: FlutterFlowTheme.of(context).white,
+                        size: 24.0,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -139,46 +145,53 @@ class _MyStudentsPageWidgetState extends State<MyStudentsPageWidget> {
                       itemCount: localList.length,
                       itemBuilder: (context, localListIndex) {
                         final localListItem = localList[localListIndex];
-                        return Material(
-                          color: Colors.transparent,
-                          elevation: 2.0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  16.0, 15.0, 16.0, 15.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    localListItem.studentName,
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          fontFamily: 'Readex Pro',
-                                          letterSpacing: 0.0,
-                                        ),
-                                  ),
-                                  Container(
-                                    width: 40.0,
-                                    height: 40.0,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
+                        return Container(
+                          margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context).white,
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    16.0, 5.0, 16.0, 5.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      localListItem.studentName,
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .override(
+                                            fontFamily: 'Readex Pro',
+                                            letterSpacing: 0.0,
+                                          ),
                                     ),
-                                    child: Image.network(
-                                      'https://picsum.photos/seed/520/600',
-                                      fit: BoxFit.cover,
+                                    Container(
+                                      width: 40.0,
+                                      height: 40.0,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: localListItem
+                                              .pathStudentImage.isEmpty
+                                          ? Container()
+                                          : Image.network(
+                                              localListItem.pathStudentImage,
+                                              fit: BoxFit.cover,
+                                            ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
+                              Container(
+                                color: Colors.black26,
+                                height: 1,
+                              )
+                            ],
                           ),
                         );
                       },

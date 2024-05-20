@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '/backend/api_requests/api_calls.dart';
 import '/backend/schema/structs/index.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -54,30 +56,29 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
           title: Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              FlutterFlowIconButton(
-                borderColor: Colors.transparent,
-                borderRadius: 30.0,
-                borderWidth: 1.0,
-                buttonSize: 60.0,
-                icon: const Icon(
+              InkWell(
+                child: const Icon(
                   Icons.arrow_back_rounded,
                   color: Colors.white,
                   size: 30.0,
                 ),
-                onPressed: () async {
+                onTap: () async {
                   context.pop();
                 },
               ),
-              Text(
-                FFLocalizations.of(context).getText(
-                  'sd5npisy' /* Add Student */,
+              Padding(
+                padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: Text(
+                  FFLocalizations.of(context).getText(
+                    'sd5npisy' /* Add Student */,
+                  ),
+                  style: FlutterFlowTheme.of(context).headlineMedium.override(
+                        fontFamily: 'Outfit',
+                        color: Colors.white,
+                        fontSize: 22.0,
+                        letterSpacing: 0.0,
+                      ),
                 ),
-                style: FlutterFlowTheme.of(context).headlineMedium.override(
-                      fontFamily: 'Outfit',
-                      color: Colors.white,
-                      fontSize: 22.0,
-                      letterSpacing: 0.0,
-                    ),
               ),
               Expanded(
                 child: Row(
@@ -313,7 +314,7 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
                   final listViewGetBranchesApiResponse = snapshot.data!;
                   return Builder(
                     builder: (context) {
-                      final localList = (listViewGetBranchesApiResponse.jsonBody
+                      final localList = (listViewGetBranchesApiResponse.jsonBody['branches']
                                   .toList()
                                   .map<BranchStruct?>(BranchStruct.maybeFromMap)
                                   .toList() as Iterable<BranchStruct?>)
@@ -360,6 +361,7 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
                                             clipBehavior: Clip.antiAlias,
                                             decoration: const BoxDecoration(
                                               shape: BoxShape.circle,
+                                              color: Colors.white
                                             ),
                                             child: Image.network(
                                               'https://picsum.photos/seed/323/600',
