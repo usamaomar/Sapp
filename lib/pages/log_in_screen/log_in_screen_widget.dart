@@ -34,10 +34,9 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        _model.emailNotValid = false;
-        _model.passwordNotValid = false;
-      });
+      _model.emailNotValid = false;
+      _model.passwordNotValid = false;
+      setState(() {});
     });
 
     _model.emailAddressTextController ??= TextEditingController();
@@ -150,9 +149,8 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                     '_model.emailAddressTextController',
                                     const Duration(milliseconds: 2000),
                                     () async {
-                                      setState(() {
-                                        _model.emailNotValid = false;
-                                      });
+                                      _model.emailNotValid = false;
+                                      setState(() {});
                                     },
                                   ),
                                   autofocus: false,
@@ -256,9 +254,8 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                     controller: _model.passwordTextController,
                                     focusNode: _model.passwordFocusNode,
                                     onFieldSubmitted: (_) async {
-                                      setState(() {
-                                        _model.passwordNotValid = false;
-                                      });
+                                      _model.passwordNotValid = false;
+                                      setState(() {});
                                     },
                                     autofocus: false,
                                     autofillHints: const [AutofillHints.password],
@@ -380,21 +377,18 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                       if (_model.emailAddressTextController
                                                   .text !=
                                               '') {
-                                        setState(() {
-                                          _model.emailNotValid = false;
-                                        });
+                                        _model.emailNotValid = false;
+                                        setState(() {});
                                         if (_model.passwordTextController
                                                     .text ==
                                                 '') {
-                                          setState(() {
-                                            _model.passwordNotValid = true;
-                                          });
+                                          _model.passwordNotValid = true;
+                                          setState(() {});
                                           if (shouldSetState) setState(() {});
                                           return;
                                         } else {
-                                          setState(() {
-                                            _model.passwordNotValid = false;
-                                          });
+                                          _model.passwordNotValid = false;
+                                          setState(() {});
                                         }
 
                                         _model.apiResultqus =
@@ -410,24 +404,22 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                         shouldSetState = true;
                                         if ((_model.apiResultqus?.succeeded ??
                                             true)) {
-                                          setState(() {
-                                            FFAppState().UserModelState =
-                                                UserModelStruct.maybeFromMap(
-                                                    getJsonField(
-                                              (_model.apiResultqus?.jsonBody ??
-                                                  ''),
-                                              r'''$.user''',
-                                            ))!;
-                                          });
-                                          setState(() {
-                                            FFAppState().TokenModelState =
-                                                TokenModelStruct.maybeFromMap(
-                                                    getJsonField(
-                                              (_model.apiResultqus?.jsonBody ??
-                                                  ''),
-                                              r'''$''',
-                                            ))!;
-                                          });
+                                          FFAppState().UserModelState =
+                                              UserModelStruct.maybeFromMap(
+                                                  getJsonField(
+                                            (_model.apiResultqus?.jsonBody ??
+                                                ''),
+                                            r'''$.user''',
+                                          ))!;
+                                          setState(() {});
+                                          FFAppState().TokenModelState =
+                                              TokenModelStruct.maybeFromMap(
+                                                  getJsonField(
+                                            (_model.apiResultqus?.jsonBody ??
+                                                ''),
+                                            r'''$''',
+                                          ))!;
+                                          setState(() {});
 
                                           context.pushNamed('MapPage');
 
@@ -467,32 +459,30 @@ class _LogInScreenWidgetState extends State<LogInScreenWidget>
                                               );
                                             },
                                           );
-                                          setState(() {
-                                            FFAppState().fullParentStateList =
-                                                (getJsonField(
-                                              (_model.apiResultqus?.jsonBody ??
-                                                  ''),
-                                              r'''$''',
-                                              true,
-                                            )!
-                                                            .toList()
-                                                            .map<ParentModelStruct?>(
-                                                                ParentModelStruct
-                                                                    .maybeFromMap)
-                                                            .toList()
-                                                        as Iterable<
-                                                            ParentModelStruct?>)
-                                                    .withoutNulls
-                                                    .toList()
-                                                    .cast<ParentModelStruct>();
-                                          });
+                                          FFAppState().fullParentStateList =
+                                              (getJsonField(
+                                            (_model.apiResultqus?.jsonBody ??
+                                                ''),
+                                            r'''$''',
+                                            true,
+                                          )!
+                                                          .toList()
+                                                          .map<ParentModelStruct?>(
+                                                              ParentModelStruct
+                                                                  .maybeFromMap)
+                                                          .toList()
+                                                      as Iterable<
+                                                          ParentModelStruct?>)
+                                                  .withoutNulls
+                                                  .toList()
+                                                  .cast<ParentModelStruct>();
+                                          setState(() {});
                                           if (shouldSetState) setState(() {});
                                           return;
                                         }
                                       } else {
-                                        setState(() {
-                                          _model.emailNotValid = true;
-                                        });
+                                        _model.emailNotValid = true;
+                                        setState(() {});
                                         if (shouldSetState) setState(() {});
                                         return;
                                       }

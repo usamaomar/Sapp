@@ -30,6 +30,9 @@ class StrackerApisGroup {
   static NewStudentApiCall newStudentApiCall = NewStudentApiCall();
   static MyStudentsApiCall myStudentsApiCall = MyStudentsApiCall();
   static GetBranchesApiCall getBranchesApiCall = GetBranchesApiCall();
+  static GetMyNotificationsCall getMyNotificationsCall =
+      GetMyNotificationsCall();
+  static GetCurrentTripApiCall getCurrentTripApiCall = GetCurrentTripApiCall();
 }
 
 class LoginApiCall {
@@ -285,6 +288,61 @@ class GetBranchesApiCall {
   }
 }
 
+class GetMyNotificationsCall {
+  Future<ApiCallResponse> call({
+    String? authorization = '',
+  }) async {
+    final baseUrl = StrackerApisGroup.getBaseUrl(
+      authorization: authorization,
+    );
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'GetMyNotifications',
+      apiUrl: '$baseUrl/myNotifications',
+      callType: ApiCallType.GET,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authorization',
+      },
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+class GetCurrentTripApiCall {
+  Future<ApiCallResponse> call({
+    int? id,
+    String? authorization = '',
+  }) async {
+    final baseUrl = StrackerApisGroup.getBaseUrl(
+      authorization: authorization,
+    );
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'GetCurrentTripApi',
+      apiUrl: '$baseUrl/trip/current/$id',
+      callType: ApiCallType.GET,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $authorization',
+      },
+      params: {
+        'id': id,
+      },
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
 /// End StrackerApis Group Code
 
 class ApiPagingParams {
@@ -303,10 +361,14 @@ class ApiPagingParams {
       'PagingParams(nextPageNumber: $nextPageNumber, numItems: $numItems, lastResponse: $lastResponse,)';
 }
 
+String _toEncodable(dynamic item) {
+  return item;
+}
+
 String _serializeList(List? list) {
   list ??= <String>[];
   try {
-    return json.encode(list);
+    return json.encode(list, toEncodable: _toEncodable);
   } catch (_) {
     if (kDebugMode) {
       print("List serialization failed. Returning empty list.");
@@ -318,7 +380,7 @@ String _serializeList(List? list) {
 String _serializeJson(dynamic jsonVar, [bool isList = false]) {
   jsonVar ??= (isList ? [] : {});
   try {
-    return json.encode(jsonVar);
+    return json.encode(jsonVar, toEncodable: _toEncodable);
   } catch (_) {
     if (kDebugMode) {
       print("Json serialization failed. Returning empty json.");

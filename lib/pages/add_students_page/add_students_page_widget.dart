@@ -117,6 +117,34 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
                             ),
                           );
                         }
+                        await showDialog(
+                          context: context,
+                          builder: (alertDialogContext) {
+                            return AlertDialog(
+                              title: Text(
+                                  FFLocalizations.of(context).getVariableText(
+                                enText: 'c',
+                                arText: 'c',
+                              )),
+                              content: Text(
+                                  FFLocalizations.of(context).getVariableText(
+                                enText: 'c',
+                                arText: 'c',
+                              )),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(alertDialogContext),
+                                  child: Text(FFLocalizations.of(context)
+                                      .getVariableText(
+                                    enText: 'c',
+                                    arText: 'c',
+                                  )),
+                                ),
+                              ],
+                            );
+                          },
+                        );
 
                         setState(() {});
                       },
@@ -167,8 +195,8 @@ class _AddStudentsPageWidgetState extends State<AddStudentsPageWidget> {
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                     ),
-                    child: Image.network(
-                      'https://picsum.photos/seed/310/600',
+                    child: Image.memory(
+                      _model.image?.bytes ?? Uint8List.fromList([]),
                       fit: BoxFit.cover,
                     ),
                   ),

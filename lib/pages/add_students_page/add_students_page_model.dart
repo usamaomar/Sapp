@@ -5,6 +5,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class AddStudentsPageModel extends FlutterFlowModel<AddStudentsPageWidget> {
+  ///  Local state fields for this page.
+
+  FFUploadedFile? image;
+
   ///  State fields for stateful widgets in this page.
 
   final unfocusNode = FocusNode();
